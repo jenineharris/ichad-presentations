@@ -1,0 +1,2817 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introduction to R</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.7/header-attrs.js"></script>
+    <link href="libs/table1-1.0/table1_defaults.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introduction to R
+## Import and Clean Data and Make Tables in R
+
+---
+
+
+
+
+
+
+
+## Welcome!
+
+This tutorial will demonstrate how to get started in R and R Studio
+
+To follow along with the workshop in R, you will need to have **already installed** R and R Studio
+
+---
+
+## How to follow along and participate
+
+* Open R Studio
+
+* Install the `tidyverse`, `rmarkdown`, `haven`, `table1`, and `here` packages (if you haven't already)
+
+    + Use the `Tools` menu and choose the `Install packages...` menu choice 
+
+    + Type the names of the packages, `tidyverse, rmarkdown`, in the dialog box that opens and click Install
+    
+* Open the workshop R Markdown file and click on the **tiny** green arrow on the top right corner of the gray shaded area (this is a code chunk!) that contains this: 
+
+
+```r
+library(package = "here")
+library(package = "tidyverse")
+library(package = "haven")
+library(package = "table1")
+```
+
+---
+
+## Running code and taking notes
+
+* The arrow will run all the code in that "chunk" of code
+
+* Throughout the workshop you will be able to run the code from the demonstration by clicking the arrow on the top right in the corresponding code chunk
+
+* In between code chunks, you can type as you would in a Word document if you'd like to take notes
+
+* For the exercises you may have to finish the code yourself and then click the arrow to get the anticipated result
+
+---
+
+## Why are we doing this?
+
+* R is open source and free 
+
+* R can do everything that SPSS and SAS can do 
+
+* R is especially great for data visualization 
+
+* The R community is supportive and active 
+
+---
+
+## The data set
+
+* We will be using the **Global Attitudes &amp; Trends** data set from the **Pew Internet &amp; American Life** website 
+
+    + If needed, download the data and documentation from this website: &lt;a href = "https://www.pewresearch.org/global/datasets/"&gt;https://www.pewresearch.org/global/datasets/&lt;/a&gt;
+    
+---
+
+## Importing data into R
+
+* Before running this code, make sure the participant file and the data file are saved in the same folder on your computer
+
+
+```r
+# use the here() function so that R looks in the same folder you are in
+here()
+```
+
+```
+[1] "/Users/harrisj/Box/service/ichad-workshops"
+```
+
+```r
+# use read_spss function to import the spss file 
+globalData2019 &lt;- read_spss(file = "Pew Research Center Global Attitudes Spring 2019 Dataset WEB.sav")
+```
+
+---
+
+## Examining the data set 
+
+* After importing the data you should see **globalData2019** in your **Environment** tab 
+
+* Next to the name you gave to the data, **globalData2019**, you will see 38426 obs. of 607 variables 
+
+    + This means there are 38426 observations, which in this case are the survey participants 
+    
+    + It also means there are 607 variables 
+    
+* The codebook for these data describe the 607 variables
+
+* Click one time on the name of the data **globalData2019**, and it will pop-up in a data viewer tab in the **Console** pane
+
+---
+
+## Choosing some variables and observations to examine 
+
+* Making a smaller dataset is often useful if there is a subset of people you are interested in, or even just to make the data easier to view
+
+* For this workshop, we will choose:
+
+    + 7 variables: SEX, AGE, BETTER_GENDER, COUNTRY_SATIS, ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY
+    
+    + Observations from South Africa (country 26), Kenya (country 16), Nigeria (country 21), United States (country 34)
+
+---
+
+count: false
+ 
+## Selecting variables and filtering observations
+.panel1-small_data-auto[
+
+```r
+*globalData2019clean &lt;- globalData2019
+```
+]
+ 
+.panel2-small_data-auto[
+
+]
+
+---
+count: false
+ 
+## Selecting variables and filtering observations
+.panel1-small_data-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+* filter(country %in% c(16, 21, 26, 34))
+```
+]
+ 
+.panel2-small_data-auto[
+
+]
+
+---
+count: false
+ 
+## Selecting variables and filtering observations
+.panel1-small_data-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+* select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+*        ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY)
+```
+]
+ 
+.panel2-small_data-auto[
+
+]
+
+---
+count: false
+ 
+## Selecting variables and filtering observations
+.panel1-small_data-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY)
+```
+]
+ 
+.panel2-small_data-auto[
+
+]
+
+&lt;style&gt;
+.panel1-small_data-auto {
+  color: black;
+  width: 98%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-small_data-auto {
+  color: black;
+  width: 0%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-small_data-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+## Examining the smaller data set
+
+
+```r
+summary(object = globalData2019clean)
+```
+
+```
+    country           SEX             AGE       BETTER_GENDER   COUNTRY_SATIS  
+ Min.   :16.00   Min.   :1.000   Min.   :18.0   Min.   :1.000   Min.   :1.000  
+ 1st Qu.:21.00   1st Qu.:1.000   1st Qu.:25.0   1st Qu.:1.000   1st Qu.:1.000  
+ Median :26.00   Median :1.000   Median :35.0   Median :2.000   Median :2.000  
+ Mean   :25.37   Mean   :1.482   Mean   :40.8   Mean   :2.036   Mean   :1.848  
+ 3rd Qu.:34.00   3rd Qu.:2.000   3rd Qu.:52.0   3rd Qu.:3.000   3rd Qu.:2.000  
+ Max.   :34.00   Max.   :2.000   Max.   :99.0   Max.   :9.000   Max.   :9.000  
+    ECON_SIT     BELIEVE_GOD    GLOBAL_COMMUNITY
+ Min.   :1.00   Min.   :1.000   Min.   :1.000   
+ 1st Qu.:2.00   1st Qu.:2.000   1st Qu.:1.000   
+ Median :3.00   Median :2.000   Median :1.000   
+ Mean   :2.76   Mean   :1.849   Mean   :1.586   
+ 3rd Qu.:4.00   3rd Qu.:2.000   3rd Qu.:2.000   
+ Max.   :9.00   Max.   :9.000   Max.   :9.000   
+```
+
+---
+
+## Planning data cleaning 
+
+* All of these variables except `AGE` should be categorical, which is a **factor** data type in R 
+
+* The way the variables are shown in the `summary()` indicates R thinks they are **numeric** data type 
+
+* Most of these variables also have categories or responses like **Don't know** or **Refused** that are probably not useful for analysis 
+
+* Data cleaning should include: 
+
+    + Changing all categorical variables into the factor type 
+    
+    + Recoding the responses like **Don't know** or **Refused** to be `NA` in R
+    
+        + `NA` stands for **Not Available** in R and is how a missing value is recorded 
+        
+---
+
+count: false
+ 
+## Changing data types 1
+.panel1-data_types-auto[
+
+```r
+*globalData2019clean &lt;- globalData2019
+```
+]
+ 
+.panel2-data_types-auto[
+
+]
+
+---
+count: false
+ 
+## Changing data types 1
+.panel1-data_types-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+* filter(country %in% c(16, 21, 26, 34))
+```
+]
+ 
+.panel2-data_types-auto[
+
+]
+
+---
+count: false
+ 
+## Changing data types 1
+.panel1-data_types-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+* select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+*        ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY)
+```
+]
+ 
+.panel2-data_types-auto[
+
+]
+
+---
+count: false
+ 
+## Changing data types 1
+.panel1-data_types-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+* zap_labels()
+```
+]
+ 
+.panel2-data_types-auto[
+
+]
+
+---
+count: false
+ 
+## Changing data types 1
+.panel1-data_types-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+* mutate(country = recode_factor(country,
+*                            '16' = 'Kenya',
+*                            '21' = 'Nigeria',
+*                            '26' = 'South Africa',
+*                            '34' = 'United States'))
+```
+]
+ 
+.panel2-data_types-auto[
+
+]
+
+&lt;style&gt;
+.panel1-data_types-auto {
+  color: black;
+  width: 98%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-data_types-auto {
+  color: black;
+  width: 0%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-data_types-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+## Checking your work 1
+
+
+```r
+summary(object = globalData2019clean)
+```
+
+```
+          country          SEX             AGE       BETTER_GENDER  
+ Kenya        :1019   Min.   :1.000   Min.   :18.0   Min.   :1.000  
+ Nigeria      : 995   1st Qu.:1.000   1st Qu.:25.0   1st Qu.:1.000  
+ South Africa :1484   Median :1.000   Median :35.0   Median :2.000  
+ United States:1503   Mean   :1.482   Mean   :40.8   Mean   :2.036  
+                      3rd Qu.:2.000   3rd Qu.:52.0   3rd Qu.:3.000  
+                      Max.   :2.000   Max.   :99.0   Max.   :9.000  
+ COUNTRY_SATIS      ECON_SIT     BELIEVE_GOD    GLOBAL_COMMUNITY
+ Min.   :1.000   Min.   :1.00   Min.   :1.000   Min.   :1.000   
+ 1st Qu.:1.000   1st Qu.:2.00   1st Qu.:2.000   1st Qu.:1.000   
+ Median :2.000   Median :3.00   Median :2.000   Median :1.000   
+ Mean   :1.848   Mean   :2.76   Mean   :1.849   Mean   :1.586   
+ 3rd Qu.:2.000   3rd Qu.:4.00   3rd Qu.:2.000   3rd Qu.:2.000   
+ Max.   :9.000   Max.   :9.00   Max.   :9.000   Max.   :9.000   
+```
+
+
+---
+
+## Detour
+
+&lt;img src="graphics/exit-to-graphics.jpg" width="600" style="display: block; margin: auto;" /&gt;
+
+---
+
+count: false
+ 
+## Make a graph
+.panel1-graph_country-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-graph_country-auto[
+
+```
+# A tibble: 5,001 x 8
+   country   SEX   AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT BELIEVE_GOD
+   &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;
+ 1 Kenya       2    21             1             2        4           2
+ 2 Kenya       1    27             2             2        4           2
+ 3 Kenya       2    23             1             2        3           2
+ 4 Kenya       1    50             1             2        4           2
+ 5 Kenya       1    24             2             2        4           2
+ 6 Kenya       2    18             2             2        4           2
+ 7 Kenya       1    33             2             2        4           2
+ 8 Kenya       2    28             1             2        3           2
+ 9 Kenya       2    50             1             2        4           2
+10 Kenya       1    23             1             1        2           1
+# … with 4,991 more rows, and 1 more variable: GLOBAL_COMMUNITY &lt;dbl&gt;
+```
+]
+
+---
+count: false
+ 
+## Make a graph
+.panel1-graph_country-auto[
+
+```r
+globalData2019clean %&gt;%
+* ggplot(aes(x = country))
+```
+]
+ 
+.panel2-graph_country-auto[
+![](index_files/figure-html/graph_country_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Make a graph
+.panel1-graph_country-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = country)) +
+* geom_bar()
+```
+]
+ 
+.panel2-graph_country-auto[
+![](index_files/figure-html/graph_country_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-graph_country-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-graph_country-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-graph_country-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+```r
+globalData2019clean %&gt;% 
+  ggplot(aes(x = country)) +
+  geom_bar()
+```
+
+![](index_files/figure-html/graph_country-1.png)&lt;!-- --&gt;
+
+---
+
+count: false
+ 
+## Make a fancier graph
+.panel1-graph_country_fancy-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-graph_country_fancy-auto[
+
+```
+# A tibble: 5,001 x 8
+   country   SEX   AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT BELIEVE_GOD
+   &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;
+ 1 Kenya       2    21             1             2        4           2
+ 2 Kenya       1    27             2             2        4           2
+ 3 Kenya       2    23             1             2        3           2
+ 4 Kenya       1    50             1             2        4           2
+ 5 Kenya       1    24             2             2        4           2
+ 6 Kenya       2    18             2             2        4           2
+ 7 Kenya       1    33             2             2        4           2
+ 8 Kenya       2    28             1             2        3           2
+ 9 Kenya       2    50             1             2        4           2
+10 Kenya       1    23             1             1        2           1
+# … with 4,991 more rows, and 1 more variable: GLOBAL_COMMUNITY &lt;dbl&gt;
+```
+]
+
+---
+count: false
+ 
+## Make a fancier graph
+.panel1-graph_country_fancy-auto[
+
+```r
+globalData2019clean %&gt;%
+* ggplot(aes(x = country))
+```
+]
+ 
+.panel2-graph_country_fancy-auto[
+![](index_files/figure-html/graph_country_fancy_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Make a fancier graph
+.panel1-graph_country_fancy-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = country)) +
+* geom_bar(fill = '#3264ce')
+```
+]
+ 
+.panel2-graph_country_fancy-auto[
+![](index_files/figure-html/graph_country_fancy_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Make a fancier graph
+.panel1-graph_country_fancy-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = country)) +
+  geom_bar(fill = '#3264ce') +
+* theme_minimal()
+```
+]
+ 
+.panel2-graph_country_fancy-auto[
+![](index_files/figure-html/graph_country_fancy_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Make a fancier graph
+.panel1-graph_country_fancy-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = country)) +
+  geom_bar(fill = '#3264ce') +
+  theme_minimal() +
+* labs(y = "Number of participants",
+*      x = "Country of residence",
+*      title = "Survey participation by country of residence")
+```
+]
+ 
+.panel2-graph_country_fancy-auto[
+![](index_files/figure-html/graph_country_fancy_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Make a fancier graph
+.panel1-graph_country_fancy-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = country)) +
+  geom_bar(fill = '#3264ce') +
+  theme_minimal() +
+  labs(y = "Number of participants",
+       x = "Country of residence",
+       title = "Survey participation by country of residence")
+```
+]
+ 
+.panel2-graph_country_fancy-auto[
+![](index_files/figure-html/graph_country_fancy_auto_06_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-graph_country_fancy-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-graph_country_fancy-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-graph_country_fancy-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+```r
+globalData2019clean %&gt;% 
+  ggplot(aes(x = country)) +
+  geom_bar(fill = '#3264ce') +
+  theme_minimal() +
+  labs(y = "Number of participants",
+       x = "Country of residence",
+       title = "Survey participation by country of residence")
+```
+
+![](index_files/figure-html/graph_country_fancy-1.png)&lt;!-- --&gt;
+
+---
+
+## Break 
+
+* Some fun things to try on your break:
+
+    + Choose a new color from colorbrewer2.org and use it to change your bar colors 
+    
+    + Add the text `base_size = 16` inside the parentheses in the `theme_minimal()` layer and see what happens when you run the code 
+    
+    + Add the text `base_family = 'serif'` inside the parentheses in the `theme_minimal()` layer and see what happens when you run the code 
+        
+        + You can keep the `base_size` argument and add `base_family` like `base_size = 16, base_family = 'serif'` or replace `base_size` with `base_family`
+
+---
+
+## And now back to data cleaning 
+
+&lt;img src="graphics/data-tutorials-wild.jpg" width="600" style="display: block; margin: auto;" /&gt;
+
+---
+
+count: false
+ 
+## Reminder: Changing data types 1
+.panel1-data_types_remind-auto[
+
+```r
+*globalData2019clean &lt;- globalData2019
+```
+]
+ 
+.panel2-data_types_remind-auto[
+
+]
+
+---
+count: false
+ 
+## Reminder: Changing data types 1
+.panel1-data_types_remind-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+* filter(country %in% c(16, 21, 26, 34))
+```
+]
+ 
+.panel2-data_types_remind-auto[
+
+]
+
+---
+count: false
+ 
+## Reminder: Changing data types 1
+.panel1-data_types_remind-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+* select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+*        ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY)
+```
+]
+ 
+.panel2-data_types_remind-auto[
+
+]
+
+---
+count: false
+ 
+## Reminder: Changing data types 1
+.panel1-data_types_remind-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+* zap_labels()
+```
+]
+ 
+.panel2-data_types_remind-auto[
+
+]
+
+---
+count: false
+ 
+## Reminder: Changing data types 1
+.panel1-data_types_remind-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+* mutate(country = recode_factor(country,
+*                            '16' = 'Kenya',
+*                            '21' = 'Nigeria',
+*                            '26' = 'South Africa',
+*                            '34' = 'United States'))
+```
+]
+ 
+.panel2-data_types_remind-auto[
+
+]
+
+&lt;style&gt;
+.panel1-data_types_remind-auto {
+  color: black;
+  width: 98%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-data_types_remind-auto {
+  color: black;
+  width: 0%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-data_types_remind-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+
+---
+
+count: false
+ 
+## Changing data types 2
+.panel1-data_types2-auto[
+
+```r
+*globalData2019clean &lt;- globalData2019
+```
+]
+ 
+.panel2-data_types2-auto[
+
+]
+
+---
+count: false
+ 
+## Changing data types 2
+.panel1-data_types2-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+* filter(country %in% c(16, 21, 26, 34))
+```
+]
+ 
+.panel2-data_types2-auto[
+
+]
+
+---
+count: false
+ 
+## Changing data types 2
+.panel1-data_types2-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+* select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+*        ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY)
+```
+]
+ 
+.panel2-data_types2-auto[
+
+]
+
+---
+count: false
+ 
+## Changing data types 2
+.panel1-data_types2-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+* zap_labels()
+```
+]
+ 
+.panel2-data_types2-auto[
+
+]
+
+---
+count: false
+ 
+## Changing data types 2
+.panel1-data_types2-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+* mutate(country = recode_factor(country,
+*                            '16' = 'Kenya',
+*                            '21' = 'Nigeria',
+*                            '26' = 'South Africa',
+*                            '34' = 'United States'))
+```
+]
+ 
+.panel2-data_types2-auto[
+
+]
+
+---
+count: false
+ 
+## Changing data types 2
+.panel1-data_types2-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+  mutate(country = recode_factor(country,
+                             '16' = 'Kenya',
+                             '21' = 'Nigeria',
+                             '26' = 'South Africa',
+                             '34' = 'United States')) %&gt;%
+* mutate(SEX = recode_factor(SEX,
+*                            '1' = 'Male',
+*                            '2' = 'Female'))
+```
+]
+ 
+.panel2-data_types2-auto[
+
+]
+
+&lt;style&gt;
+.panel1-data_types2-auto {
+  color: black;
+  width: 98%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-data_types2-auto {
+  color: black;
+  width: 0%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-data_types2-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+## Checking your work 2
+
+
+```r
+summary(object = globalData2019clean)
+```
+
+```
+          country         SEX            AGE       BETTER_GENDER  
+ Kenya        :1019   Male  :2592   Min.   :18.0   Min.   :1.000  
+ Nigeria      : 995   Female:2409   1st Qu.:25.0   1st Qu.:1.000  
+ South Africa :1484                 Median :35.0   Median :2.000  
+ United States:1503                 Mean   :40.8   Mean   :2.036  
+                                    3rd Qu.:52.0   3rd Qu.:3.000  
+                                    Max.   :99.0   Max.   :9.000  
+ COUNTRY_SATIS      ECON_SIT     BELIEVE_GOD    GLOBAL_COMMUNITY
+ Min.   :1.000   Min.   :1.00   Min.   :1.000   Min.   :1.000   
+ 1st Qu.:1.000   1st Qu.:2.00   1st Qu.:2.000   1st Qu.:1.000   
+ Median :2.000   Median :3.00   Median :2.000   Median :1.000   
+ Mean   :1.848   Mean   :2.76   Mean   :1.849   Mean   :1.586   
+ 3rd Qu.:2.000   3rd Qu.:4.00   3rd Qu.:2.000   3rd Qu.:2.000   
+ Max.   :9.000   Max.   :9.00   Max.   :9.000   Max.   :9.000   
+```
+
+---
+
+count: false
+ 
+## Changing data types 3
+.panel1-data_types3-auto[
+
+```r
+*globalData2019clean &lt;- globalData2019
+```
+]
+ 
+.panel2-data_types3-auto[
+
+]
+
+---
+count: false
+ 
+## Changing data types 3
+.panel1-data_types3-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+* filter(country %in% c(16, 21, 26, 34))
+```
+]
+ 
+.panel2-data_types3-auto[
+
+]
+
+---
+count: false
+ 
+## Changing data types 3
+.panel1-data_types3-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+* select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+*        ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY)
+```
+]
+ 
+.panel2-data_types3-auto[
+
+]
+
+---
+count: false
+ 
+## Changing data types 3
+.panel1-data_types3-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+* zap_labels()
+```
+]
+ 
+.panel2-data_types3-auto[
+
+]
+
+---
+count: false
+ 
+## Changing data types 3
+.panel1-data_types3-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+* mutate(country = recode_factor(country,
+*                            '16' = 'Kenya',
+*                            '21' = 'Nigeria',
+*                            '26' = 'South Africa',
+*                            '34' = 'United States'))
+```
+]
+ 
+.panel2-data_types3-auto[
+
+]
+
+---
+count: false
+ 
+## Changing data types 3
+.panel1-data_types3-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+  mutate(country = recode_factor(country,
+                             '16' = 'Kenya',
+                             '21' = 'Nigeria',
+                             '26' = 'South Africa',
+                             '34' = 'United States')) %&gt;%
+* mutate(SEX = recode_factor(SEX,
+*                            '1' = 'Male',
+*                            '2' = 'Female'))
+```
+]
+ 
+.panel2-data_types3-auto[
+
+]
+
+---
+count: false
+ 
+## Changing data types 3
+.panel1-data_types3-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+  mutate(country = recode_factor(country,
+                             '16' = 'Kenya',
+                             '21' = 'Nigeria',
+                             '26' = 'South Africa',
+                             '34' = 'United States')) %&gt;%
+  mutate(SEX = recode_factor(SEX,
+                             '1' = 'Male',
+                             '2' = 'Female')) %&gt;%
+* mutate(BETTER_GENDER = recode_factor(BETTER_GENDER,
+*                                   '1' = 'Men',
+*                                   '2' = 'Women',
+*                                   '3' = 'Same/both equally',
+*                                   '8' = NA_character_,
+*                                   '9' = NA_character_))
+```
+]
+ 
+.panel2-data_types3-auto[
+
+]
+
+---
+count: false
+ 
+## Changing data types 3
+.panel1-data_types3-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+  mutate(country = recode_factor(country,
+                             '16' = 'Kenya',
+                             '21' = 'Nigeria',
+                             '26' = 'South Africa',
+                             '34' = 'United States')) %&gt;%
+  mutate(SEX = recode_factor(SEX,
+                             '1' = 'Male',
+                             '2' = 'Female')) %&gt;%
+  mutate(BETTER_GENDER = recode_factor(BETTER_GENDER,
+                                    '1' = 'Men',
+                                    '2' = 'Women',
+                                    '3' = 'Same/both equally',
+                                    '8' = NA_character_,
+                                    '9' = NA_character_)) %&gt;%
+* mutate(COUNTRY_SATIS = recode_factor(COUNTRY_SATIS,
+*                                      '1' = 'Satisfied',
+*                                      '2' = 'Dissatisfied',
+*                                      '8' = NA_character_,
+*                                      '9' = NA_character_))
+```
+]
+ 
+.panel2-data_types3-auto[
+
+]
+
+&lt;style&gt;
+.panel1-data_types3-auto {
+  color: black;
+  width: 98%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-data_types3-auto {
+  color: black;
+  width: 0%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-data_types3-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+## Checking your work 3
+
+
+```r
+summary(object = globalData2019clean)
+```
+
+```
+          country         SEX            AGE                 BETTER_GENDER 
+ Kenya        :1019   Male  :2592   Min.   :18.0   Men              :2340  
+ Nigeria      : 995   Female:2409   1st Qu.:25.0   Women            :1303  
+ South Africa :1484                 Median :35.0   Same/both equally:1134  
+ United States:1503                 Mean   :40.8   NA's             : 224  
+                                    3rd Qu.:52.0                           
+                                    Max.   :99.0                           
+      COUNTRY_SATIS     ECON_SIT     BELIEVE_GOD    GLOBAL_COMMUNITY
+ Satisfied   :1370   Min.   :1.00   Min.   :1.000   Min.   :1.000   
+ Dissatisfied:3531   1st Qu.:2.00   1st Qu.:2.000   1st Qu.:1.000   
+ NA's        : 100   Median :3.00   Median :2.000   Median :1.000   
+                     Mean   :2.76   Mean   :1.849   Mean   :1.586   
+                     3rd Qu.:4.00   3rd Qu.:2.000   3rd Qu.:2.000   
+                     Max.   :9.00   Max.   :9.000   Max.   :9.000   
+```
+
+---
+
+## Recoding data: You Try It!
+
+* Look in the codebook to find the variable for **ECON_SIT** (note: it will be lower case in the codebook)
+
+* Add recoding of **ECON_SIT** to the code below and run the code 
+
+* Run the `summary()` code in the next code chunk to check your work
+
+
+
+
+
+
+---
+
+count: false
+ 
+## Answer to You Try It!
+.panel1-you_try_key-auto[
+
+```r
+*globalData2019clean &lt;- globalData2019
+```
+]
+ 
+.panel2-you_try_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to You Try It!
+.panel1-you_try_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+* filter(country %in% c(16, 21, 26, 34))
+```
+]
+ 
+.panel2-you_try_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to You Try It!
+.panel1-you_try_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+* select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+*        ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY)
+```
+]
+ 
+.panel2-you_try_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to You Try It!
+.panel1-you_try_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+* zap_labels()
+```
+]
+ 
+.panel2-you_try_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to You Try It!
+.panel1-you_try_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+* mutate(country = recode_factor(country,
+*                            '16' = 'Kenya',
+*                            '21' = 'Nigeria',
+*                            '26' = 'South Africa',
+*                            '34' = 'United States'))
+```
+]
+ 
+.panel2-you_try_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to You Try It!
+.panel1-you_try_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+  mutate(country = recode_factor(country,
+                             '16' = 'Kenya',
+                             '21' = 'Nigeria',
+                             '26' = 'South Africa',
+                             '34' = 'United States')) %&gt;%
+* mutate(SEX = recode_factor(SEX,
+*                            '1' = 'Male',
+*                            '2' = 'Female'))
+```
+]
+ 
+.panel2-you_try_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to You Try It!
+.panel1-you_try_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+  mutate(country = recode_factor(country,
+                             '16' = 'Kenya',
+                             '21' = 'Nigeria',
+                             '26' = 'South Africa',
+                             '34' = 'United States')) %&gt;%
+  mutate(SEX = recode_factor(SEX,
+                             '1' = 'Male',
+                             '2' = 'Female')) %&gt;%
+* mutate(BETTER_GENDER = recode_factor(BETTER_GENDER,
+*                                   '1' = 'Men',
+*                                   '2' = 'Women',
+*                                   '3' = 'Same/both equally',
+*                                   '8' = NA_character_,
+*                                   '9' = NA_character_))
+```
+]
+ 
+.panel2-you_try_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to You Try It!
+.panel1-you_try_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+  mutate(country = recode_factor(country,
+                             '16' = 'Kenya',
+                             '21' = 'Nigeria',
+                             '26' = 'South Africa',
+                             '34' = 'United States')) %&gt;%
+  mutate(SEX = recode_factor(SEX,
+                             '1' = 'Male',
+                             '2' = 'Female')) %&gt;%
+  mutate(BETTER_GENDER = recode_factor(BETTER_GENDER,
+                                    '1' = 'Men',
+                                    '2' = 'Women',
+                                    '3' = 'Same/both equally',
+                                    '8' = NA_character_,
+                                    '9' = NA_character_)) %&gt;%
+* mutate(COUNTRY_SATIS = recode_factor(COUNTRY_SATIS,
+*                                      '1' = 'Satisfied',
+*                                      '2' = 'Dissatisfied',
+*                                      '8' = NA_character_,
+*                                      '9' = NA_character_))
+```
+]
+ 
+.panel2-you_try_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to You Try It!
+.panel1-you_try_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+  mutate(country = recode_factor(country,
+                             '16' = 'Kenya',
+                             '21' = 'Nigeria',
+                             '26' = 'South Africa',
+                             '34' = 'United States')) %&gt;%
+  mutate(SEX = recode_factor(SEX,
+                             '1' = 'Male',
+                             '2' = 'Female')) %&gt;%
+  mutate(BETTER_GENDER = recode_factor(BETTER_GENDER,
+                                    '1' = 'Men',
+                                    '2' = 'Women',
+                                    '3' = 'Same/both equally',
+                                    '8' = NA_character_,
+                                    '9' = NA_character_)) %&gt;%
+  mutate(COUNTRY_SATIS = recode_factor(COUNTRY_SATIS,
+                                       '1' = 'Satisfied',
+                                       '2' = 'Dissatisfied',
+                                       '8' = NA_character_,
+                                       '9' = NA_character_)) %&gt;%
+* mutate(ECON_SIT = recode_factor(ECON_SIT,
+*                                 '1' = 'Very good',
+*                                 '2' = 'Somewhat good',
+*                                 '3' = 'Somewhat bad',
+*                                 '4' = 'Very bad',
+*                                 '8' = NA_character_,
+*                                 '9' = NA_character_))
+```
+]
+ 
+.panel2-you_try_key-auto[
+
+]
+
+&lt;style&gt;
+.panel1-you_try_key-auto {
+  color: black;
+  width: 98%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-you_try_key-auto {
+  color: black;
+  width: 0%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-you_try_key-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+## Check your work: You Try It!
+
+* If the code ran properly, you should expect to see the four categories listed under the `ECON_SIT` variable name
+
+* If you do not see this, go back to your code and look for missing commas and other punctuation problems 
+
+
+```r
+summary(object = globalData2019clean)
+```
+
+```
+          country         SEX            AGE                 BETTER_GENDER 
+ Kenya        :1019   Male  :2592   Min.   :18.0   Men              :2340  
+ Nigeria      : 995   Female:2409   1st Qu.:25.0   Women            :1303  
+ South Africa :1484                 Median :35.0   Same/both equally:1134  
+ United States:1503                 Mean   :40.8   NA's             : 224  
+                                    3rd Qu.:52.0                           
+                                    Max.   :99.0                           
+      COUNTRY_SATIS           ECON_SIT     BELIEVE_GOD    GLOBAL_COMMUNITY
+ Satisfied   :1370   Very good    : 648   Min.   :1.000   Min.   :1.000   
+ Dissatisfied:3531   Somewhat good:1620   1st Qu.:2.000   1st Qu.:1.000   
+ NA's        : 100   Somewhat bad :1265   Median :2.000   Median :1.000   
+                     Very bad     :1408   Mean   :1.849   Mean   :1.586   
+                     NA's         :  60   3rd Qu.:2.000   3rd Qu.:2.000   
+                                          Max.   :9.000   Max.   :9.000   
+```
+
+---
+
+## Try Some More! 
+
+* Recode the last two categorical variables, `BELIEVE_GOD` and `GLOBAL_COMMUNITY` to have appropriate category labels and `NA` 
+
+* Use the codebook to find the labels you need 
+
+* Add to the existing code: 
+
+
+
+---
+
+## Check your work: Try Some More!
+
+* If the code ran properly, you should expect to see the categories listed under the variable names
+
+* If you do not see this, go back to your code and look for missing commas and other punctuation problems 
+
+---
+
+count: false
+ 
+## Answer to Try Some More!
+.panel1-try_more_key-auto[
+
+```r
+*globalData2019clean &lt;- globalData2019
+```
+]
+ 
+.panel2-try_more_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to Try Some More!
+.panel1-try_more_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+* filter(country %in% c(16, 21, 26, 34))
+```
+]
+ 
+.panel2-try_more_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to Try Some More!
+.panel1-try_more_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+* select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+*        ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY)
+```
+]
+ 
+.panel2-try_more_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to Try Some More!
+.panel1-try_more_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+* zap_labels()
+```
+]
+ 
+.panel2-try_more_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to Try Some More!
+.panel1-try_more_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+* mutate(country = recode_factor(country,
+*                            '16' = 'Kenya',
+*                            '21' = 'Nigeria',
+*                            '26' = 'South Africa',
+*                            '34' = 'United States'))
+```
+]
+ 
+.panel2-try_more_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to Try Some More!
+.panel1-try_more_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+  mutate(country = recode_factor(country,
+                             '16' = 'Kenya',
+                             '21' = 'Nigeria',
+                             '26' = 'South Africa',
+                             '34' = 'United States')) %&gt;%
+* mutate(SEX = recode_factor(SEX,
+*                            '1' = 'Male',
+*                            '2' = 'Female'))
+```
+]
+ 
+.panel2-try_more_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to Try Some More!
+.panel1-try_more_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+  mutate(country = recode_factor(country,
+                             '16' = 'Kenya',
+                             '21' = 'Nigeria',
+                             '26' = 'South Africa',
+                             '34' = 'United States')) %&gt;%
+  mutate(SEX = recode_factor(SEX,
+                             '1' = 'Male',
+                             '2' = 'Female')) %&gt;%
+* mutate(BETTER_GENDER = recode_factor(BETTER_GENDER,
+*                                   '1' = 'Men',
+*                                   '2' = 'Women',
+*                                   '3' = 'Same/both equally',
+*                                   '8' = NA_character_,
+*                                   '9' = NA_character_))
+```
+]
+ 
+.panel2-try_more_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to Try Some More!
+.panel1-try_more_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+  mutate(country = recode_factor(country,
+                             '16' = 'Kenya',
+                             '21' = 'Nigeria',
+                             '26' = 'South Africa',
+                             '34' = 'United States')) %&gt;%
+  mutate(SEX = recode_factor(SEX,
+                             '1' = 'Male',
+                             '2' = 'Female')) %&gt;%
+  mutate(BETTER_GENDER = recode_factor(BETTER_GENDER,
+                                    '1' = 'Men',
+                                    '2' = 'Women',
+                                    '3' = 'Same/both equally',
+                                    '8' = NA_character_,
+                                    '9' = NA_character_)) %&gt;%
+* mutate(COUNTRY_SATIS = recode_factor(COUNTRY_SATIS,
+*                                      '1' = 'Satisfied',
+*                                      '2' = 'Dissatisfied',
+*                                      '8' = NA_character_,
+*                                      '9' = NA_character_))
+```
+]
+ 
+.panel2-try_more_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to Try Some More!
+.panel1-try_more_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+  mutate(country = recode_factor(country,
+                             '16' = 'Kenya',
+                             '21' = 'Nigeria',
+                             '26' = 'South Africa',
+                             '34' = 'United States')) %&gt;%
+  mutate(SEX = recode_factor(SEX,
+                             '1' = 'Male',
+                             '2' = 'Female')) %&gt;%
+  mutate(BETTER_GENDER = recode_factor(BETTER_GENDER,
+                                    '1' = 'Men',
+                                    '2' = 'Women',
+                                    '3' = 'Same/both equally',
+                                    '8' = NA_character_,
+                                    '9' = NA_character_)) %&gt;%
+  mutate(COUNTRY_SATIS = recode_factor(COUNTRY_SATIS,
+                                       '1' = 'Satisfied',
+                                       '2' = 'Dissatisfied',
+                                       '8' = NA_character_,
+                                       '9' = NA_character_)) %&gt;%
+* mutate(ECON_SIT = recode_factor(ECON_SIT,
+*                                 '1' = 'Very good',
+*                                 '2' = 'Somewhat good',
+*                                 '3' = 'Somewhat bad',
+*                                 '4' = 'Very bad',
+*                                 '8' = NA_character_,
+*                                 '9' = NA_character_))
+```
+]
+ 
+.panel2-try_more_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to Try Some More!
+.panel1-try_more_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+  mutate(country = recode_factor(country,
+                             '16' = 'Kenya',
+                             '21' = 'Nigeria',
+                             '26' = 'South Africa',
+                             '34' = 'United States')) %&gt;%
+  mutate(SEX = recode_factor(SEX,
+                             '1' = 'Male',
+                             '2' = 'Female')) %&gt;%
+  mutate(BETTER_GENDER = recode_factor(BETTER_GENDER,
+                                    '1' = 'Men',
+                                    '2' = 'Women',
+                                    '3' = 'Same/both equally',
+                                    '8' = NA_character_,
+                                    '9' = NA_character_)) %&gt;%
+  mutate(COUNTRY_SATIS = recode_factor(COUNTRY_SATIS,
+                                       '1' = 'Satisfied',
+                                       '2' = 'Dissatisfied',
+                                       '8' = NA_character_,
+                                       '9' = NA_character_)) %&gt;%
+  mutate(ECON_SIT = recode_factor(ECON_SIT,
+                                  '1' = 'Very good',
+                                  '2' = 'Somewhat good',
+                                  '3' = 'Somewhat bad',
+                                  '4' = 'Very bad',
+                                  '8' = NA_character_,
+                                  '9' = NA_character_)) %&gt;%
+* mutate(BELIEVE_GOD = recode_factor(BELIEVE_GOD,
+*                                    '1' = 'It is not necessary to believe in God in order to be moral and have good values',
+*                                    '2' = 'It is necessary to believe in God in order to be moral and have good values',
+*                                    '8' = NA_character_,
+*                                    '9' = NA_character_))
+```
+]
+ 
+.panel2-try_more_key-auto[
+
+]
+
+---
+count: false
+ 
+## Answer to Try Some More!
+.panel1-try_more_key-auto[
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;%
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
+  zap_labels() %&gt;%
+  mutate(country = recode_factor(country,
+                             '16' = 'Kenya',
+                             '21' = 'Nigeria',
+                             '26' = 'South Africa',
+                             '34' = 'United States')) %&gt;%
+  mutate(SEX = recode_factor(SEX,
+                             '1' = 'Male',
+                             '2' = 'Female')) %&gt;%
+  mutate(BETTER_GENDER = recode_factor(BETTER_GENDER,
+                                    '1' = 'Men',
+                                    '2' = 'Women',
+                                    '3' = 'Same/both equally',
+                                    '8' = NA_character_,
+                                    '9' = NA_character_)) %&gt;%
+  mutate(COUNTRY_SATIS = recode_factor(COUNTRY_SATIS,
+                                       '1' = 'Satisfied',
+                                       '2' = 'Dissatisfied',
+                                       '8' = NA_character_,
+                                       '9' = NA_character_)) %&gt;%
+  mutate(ECON_SIT = recode_factor(ECON_SIT,
+                                  '1' = 'Very good',
+                                  '2' = 'Somewhat good',
+                                  '3' = 'Somewhat bad',
+                                  '4' = 'Very bad',
+                                  '8' = NA_character_,
+                                  '9' = NA_character_)) %&gt;%
+  mutate(BELIEVE_GOD = recode_factor(BELIEVE_GOD,
+                                     '1' = 'It is not necessary to believe in God in order to be moral and have good values',
+                                     '2' = 'It is necessary to believe in God in order to be moral and have good values',
+                                     '8' = NA_character_,
+                                     '9' = NA_character_)) %&gt;%
+* mutate(GLOBAL_COMMUNITY = recode_factor(GLOBAL_COMMUNITY,
+*                                         '1' = 'Part of a global community that works together to solve problems',
+*                                         '2' = 'Independent nations that compete with other countries and pursue their own interests',
+*                                         '3' = 'Both',
+*                                         '4' = 'Neither',
+*                                         '8' = NA_character_,
+*                                         '9' = NA_character_))
+```
+]
+ 
+.panel2-try_more_key-auto[
+
+]
+
+&lt;style&gt;
+.panel1-try_more_key-auto {
+  color: black;
+  width: 98%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-try_more_key-auto {
+  color: black;
+  width: 0%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-try_more_key-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+## Check your work: Try Some More!
+
+
+```r
+summary(object = globalData2019clean)
+```
+
+```
+          country         SEX            AGE                 BETTER_GENDER 
+ Kenya        :1019   Male  :2592   Min.   :18.0   Men              :2340  
+ Nigeria      : 995   Female:2409   1st Qu.:25.0   Women            :1303  
+ South Africa :1484                 Median :35.0   Same/both equally:1134  
+ United States:1503                 Mean   :40.8   NA's             : 224  
+                                    3rd Qu.:52.0                           
+                                    Max.   :99.0                           
+      COUNTRY_SATIS           ECON_SIT   
+ Satisfied   :1370   Very good    : 648  
+ Dissatisfied:3531   Somewhat good:1620  
+ NA's        : 100   Somewhat bad :1265  
+                     Very bad     :1408  
+                     NA's         :  60  
+                                         
+                                                                          BELIEVE_GOD  
+ It is not necessary to believe in God in order to be moral and have good values:1189  
+ It is necessary to believe in God in order to be moral and have good values    :3744  
+ NA's                                                                           :  68  
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                             GLOBAL_COMMUNITY
+ Part of a global community that works together to solve problems                    :3520   
+ Independent nations that compete with other countries and pursue their own interests:1069   
+ Both                                                                                : 190   
+ Neither                                                                             :  23   
+ NA's                                                                                : 199   
+                                                                                             
+```
+
+---
+
+## Final recoding for age
+
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;% 
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS, 
+         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;% 
+  zap_labels() %&gt;%
+  mutate(AGE = na_if(AGE, 98)) %&gt;% 
+  mutate(country = recode_factor(country,
+                             '16' = 'Kenya',
+                             '21' = 'Nigeria',
+                             '26' = 'South Africa',
+                             '34' = 'United States')) %&gt;%
+  mutate(SEX = recode_factor(SEX,
+                             '1' = 'Male',
+                             '2' = 'Female')) %&gt;% 
+  mutate(BETTER_GENDER = recode_factor(BETTER_GENDER,
+                                    '1' = 'Men',
+                                    '2' = 'Women',
+                                    '3' = 'Same/both equally',
+                                    '8' = NA_character_,
+                                    '9' = NA_character_)) %&gt;% 
+  mutate(COUNTRY_SATIS = recode_factor(COUNTRY_SATIS,
+                                       '1' = 'Satisfied',
+                                       '2' = 'Dissatisfied',
+                                       '8' = NA_character_,
+                                       '9' = NA_character_)) %&gt;% 
+  mutate(ECON_SIT = recode_factor(ECON_SIT,
+                                  '1' = 'Very good',
+                                  '2' = 'Somewhat good',
+                                  '3' = 'Somewhat bad',
+                                  '4' = 'Very bad',
+                                  '8' = NA_character_,
+                                  '9' = NA_character_)) %&gt;% 
+  mutate(BELIEVE_GOD = recode_factor(BELIEVE_GOD,
+                                     '1' = 'It is not necessary to believe in God in order to be moral and have good values',
+                                     '2' = 'It is necessary to believe in God in order to be moral and have good values',
+                                     '8' = NA_character_,
+                                     '9' = NA_character_)) %&gt;% 
+  mutate(GLOBAL_COMMUNITY = recode_factor(GLOBAL_COMMUNITY,
+                                          '1' = 'Part of a global community that works together to solve problems',
+                                          '2' = 'Independent nations that compete with other countries and pursue their own interests',
+                                          '3' = 'Both',
+                                          '4' = 'Neither',
+                                          '8' = NA_character_,
+                                          '9' = NA_character_)) 
+```
+
+
+---
+
+## Basic table
+
+* We can start with a simple table with the `table1` package that shows the `SEX`, `AGE`, and `BETTER_GENDER` variables with their descriptive statistics
+
+
+```r
+table1(~ SEX + AGE + BETTER_GENDER,
+       data = globalData2019clean)
+```
+
+<div class="Rtable1"><table class="Rtable1">
+<thead>
+<tr>
+<th class='rowlabel firstrow lastrow'></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Overall<br><span class='stratn'>(N=5001)</span></span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>SEX</span></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Male</td>
+<td>2592 (51.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Female</td>
+<td class='lastrow'>2409 (48.2%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>How old were you at your last birthday?</span></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Mean (SD)</td>
+<td>39.9 (18.0)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Median [Min, Max]</td>
+<td>35.0 [18.0, 99.0]</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>75 (1.5%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>BETTER_GENDER</span></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Men</td>
+<td>2340 (46.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Women</td>
+<td>1303 (26.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Same/both equally</td>
+<td>1134 (22.7%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>224 (4.5%)</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+---
+
+## Oh no bad labels
+
+
+&lt;img src="graphics/making-labels.png" width="600" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+## Basic table with labels
+
+* Add labels for the variables and add the `BELIEVE_GOD` variable
+
+
+```r
+label(globalData2019clean$SEX) &lt;- "Sex"
+label(globalData2019clean$AGE) &lt;- "Age (years)" 
+label(globalData2019clean$BETTER_GENDER) &lt;- "Who has a better life in this country"
+label(globalData2019clean$BELIEVE_GOD) &lt;- "Which comes closest to your opinion"
+```
+
+---
+
+## Basic table with labels
+
+
+```r
+table1(~ SEX + AGE + BETTER_GENDER + BELIEVE_GOD,
+       data = globalData2019clean)
+```
+
+<div class="Rtable1"><table class="Rtable1">
+<thead>
+<tr>
+<th class='rowlabel firstrow lastrow'></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Overall<br><span class='stratn'>(N=5001)</span></span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Sex</span></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Male</td>
+<td>2592 (51.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Female</td>
+<td class='lastrow'>2409 (48.2%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Age (years)</span></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Mean (SD)</td>
+<td>39.9 (18.0)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Median [Min, Max]</td>
+<td>35.0 [18.0, 99.0]</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>75 (1.5%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Who has a better life in this country</span></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Men</td>
+<td>2340 (46.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Women</td>
+<td>1303 (26.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Same/both equally</td>
+<td>1134 (22.7%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>224 (4.5%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Which comes closest to your opinion</span></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>It is not necessary to believe in God in order to be moral and have good values</td>
+<td>1189 (23.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>It is necessary to believe in God in order to be moral and have good values</td>
+<td>3744 (74.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>68 (1.4%)</td>
+</tr>
+</tbody>
+</table>
+</div>
+---
+
+## Basic table with labels and grouped by sex
+
+* Move the `SEX` variable so it is used for grouping 
+
+
+```r
+table1(~ AGE + BETTER_GENDER + BELIEVE_GOD | SEX,
+       data = globalData2019clean)
+```
+
+<div class="Rtable1"><table class="Rtable1">
+<thead>
+<tr>
+<th class='rowlabel firstrow lastrow'></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Male<br><span class='stratn'>(N=2592)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Female<br><span class='stratn'>(N=2409)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Overall<br><span class='stratn'>(N=5001)</span></span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Age (years)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Mean (SD)</td>
+<td>40.1 (17.7)</td>
+<td>39.7 (18.3)</td>
+<td>39.9 (18.0)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Median [Min, Max]</td>
+<td>36.0 [18.0, 99.0]</td>
+<td>35.0 [18.0, 99.0]</td>
+<td>35.0 [18.0, 99.0]</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>26 (1.0%)</td>
+<td class='lastrow'>49 (2.0%)</td>
+<td class='lastrow'>75 (1.5%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Who has a better life in this country</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Men</td>
+<td>1172 (45.2%)</td>
+<td>1168 (48.5%)</td>
+<td>2340 (46.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Women</td>
+<td>699 (27.0%)</td>
+<td>604 (25.1%)</td>
+<td>1303 (26.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Same/both equally</td>
+<td>611 (23.6%)</td>
+<td>523 (21.7%)</td>
+<td>1134 (22.7%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>110 (4.2%)</td>
+<td class='lastrow'>114 (4.7%)</td>
+<td class='lastrow'>224 (4.5%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Which comes closest to your opinion</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>It is not necessary to believe in God in order to be moral and have good values</td>
+<td>711 (27.4%)</td>
+<td>478 (19.8%)</td>
+<td>1189 (23.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>It is necessary to believe in God in order to be moral and have good values</td>
+<td>1842 (71.1%)</td>
+<td>1902 (79.0%)</td>
+<td>3744 (74.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>39 (1.5%)</td>
+<td class='lastrow'>29 (1.2%)</td>
+<td class='lastrow'>68 (1.4%)</td>
+</tr>
+</tbody>
+</table>
+</div>
+---
+
+## Basic table with labels, groups, and total
+
+* Change the title for the Overall column to **Total**
+
+
+```r
+table1(~ AGE + BETTER_GENDER + BELIEVE_GOD | SEX,
+       data = globalData2019clean, overall = "Total")
+```
+
+<div class="Rtable1"><table class="Rtable1">
+<thead>
+<tr>
+<th class='rowlabel firstrow lastrow'></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Male<br><span class='stratn'>(N=2592)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Female<br><span class='stratn'>(N=2409)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Total<br><span class='stratn'>(N=5001)</span></span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Age (years)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Mean (SD)</td>
+<td>40.1 (17.7)</td>
+<td>39.7 (18.3)</td>
+<td>39.9 (18.0)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Median [Min, Max]</td>
+<td>36.0 [18.0, 99.0]</td>
+<td>35.0 [18.0, 99.0]</td>
+<td>35.0 [18.0, 99.0]</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>26 (1.0%)</td>
+<td class='lastrow'>49 (2.0%)</td>
+<td class='lastrow'>75 (1.5%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Who has a better life in this country</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Men</td>
+<td>1172 (45.2%)</td>
+<td>1168 (48.5%)</td>
+<td>2340 (46.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Women</td>
+<td>699 (27.0%)</td>
+<td>604 (25.1%)</td>
+<td>1303 (26.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Same/both equally</td>
+<td>611 (23.6%)</td>
+<td>523 (21.7%)</td>
+<td>1134 (22.7%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>110 (4.2%)</td>
+<td class='lastrow'>114 (4.7%)</td>
+<td class='lastrow'>224 (4.5%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Which comes closest to your opinion</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>It is not necessary to believe in God in order to be moral and have good values</td>
+<td>711 (27.4%)</td>
+<td>478 (19.8%)</td>
+<td>1189 (23.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>It is necessary to believe in God in order to be moral and have good values</td>
+<td>1842 (71.1%)</td>
+<td>1902 (79.0%)</td>
+<td>3744 (74.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>39 (1.5%)</td>
+<td class='lastrow'>29 (1.2%)</td>
+<td class='lastrow'>68 (1.4%)</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+---
+
+## You Try It!
+
+* Copy and paste the label and table code from above into the empty R chunk
+
+* Add labels to the `COUNTRY_SATIS` and `ECON_SIT` variables (check the codebook to find these)
+
+* Add the `COUNTRY_SATIS` and `ECON_SIT` variables to the table 
+
+* Run the code to make sure it works
+
+
+
+---
+
+## Answer for You Try It!
+
+
+```r
+label(globalData2019clean$COUNTRY_SATIS) &lt;- "Satisfied or dissatisfied with the way things are going in (country)"
+label(globalData2019clean$ECON_SIT) &lt;- "How would you describe the current economic situation (country)" 
+```
+
+---
+
+## Answer for You Try It!
+
+
+```r
+table1(~ AGE + BETTER_GENDER + BELIEVE_GOD + COUNTRY_SATIS + ECON_SIT | SEX,
+       data = globalData2019clean, overall = "Total")
+```
+
+<div class="Rtable1"><table class="Rtable1">
+<thead>
+<tr>
+<th class='rowlabel firstrow lastrow'></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Male<br><span class='stratn'>(N=2592)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Female<br><span class='stratn'>(N=2409)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Total<br><span class='stratn'>(N=5001)</span></span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Age (years)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Mean (SD)</td>
+<td>40.1 (17.7)</td>
+<td>39.7 (18.3)</td>
+<td>39.9 (18.0)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Median [Min, Max]</td>
+<td>36.0 [18.0, 99.0]</td>
+<td>35.0 [18.0, 99.0]</td>
+<td>35.0 [18.0, 99.0]</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>26 (1.0%)</td>
+<td class='lastrow'>49 (2.0%)</td>
+<td class='lastrow'>75 (1.5%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Who has a better life in this country</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Men</td>
+<td>1172 (45.2%)</td>
+<td>1168 (48.5%)</td>
+<td>2340 (46.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Women</td>
+<td>699 (27.0%)</td>
+<td>604 (25.1%)</td>
+<td>1303 (26.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Same/both equally</td>
+<td>611 (23.6%)</td>
+<td>523 (21.7%)</td>
+<td>1134 (22.7%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>110 (4.2%)</td>
+<td class='lastrow'>114 (4.7%)</td>
+<td class='lastrow'>224 (4.5%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Which comes closest to your opinion</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>It is not necessary to believe in God in order to be moral and have good values</td>
+<td>711 (27.4%)</td>
+<td>478 (19.8%)</td>
+<td>1189 (23.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>It is necessary to believe in God in order to be moral and have good values</td>
+<td>1842 (71.1%)</td>
+<td>1902 (79.0%)</td>
+<td>3744 (74.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>39 (1.5%)</td>
+<td class='lastrow'>29 (1.2%)</td>
+<td class='lastrow'>68 (1.4%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Satisfied or dissatisfied with the way things are going in (country)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Satisfied</td>
+<td>745 (28.7%)</td>
+<td>625 (25.9%)</td>
+<td>1370 (27.4%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Dissatisfied</td>
+<td>1783 (68.8%)</td>
+<td>1748 (72.6%)</td>
+<td>3531 (70.6%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>64 (2.5%)</td>
+<td class='lastrow'>36 (1.5%)</td>
+<td class='lastrow'>100 (2.0%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>How would you describe the current economic situation (country)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Very good</td>
+<td>405 (15.6%)</td>
+<td>243 (10.1%)</td>
+<td>648 (13.0%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Somewhat good</td>
+<td>852 (32.9%)</td>
+<td>768 (31.9%)</td>
+<td>1620 (32.4%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Somewhat bad</td>
+<td>639 (24.7%)</td>
+<td>626 (26.0%)</td>
+<td>1265 (25.3%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Very bad</td>
+<td>664 (25.6%)</td>
+<td>744 (30.9%)</td>
+<td>1408 (28.2%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>32 (1.2%)</td>
+<td class='lastrow'>28 (1.2%)</td>
+<td class='lastrow'>60 (1.2%)</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+---
+
+## Questions?
+
+&lt;img src="https://dinosandcomics.com/wp-content/uploads/2020/11/011-OVERTHINKING-768x768.png" width="400" style="display: block; margin: auto;" /&gt;
+
+---
+
+## The end
+
+* Email me at [harrisj@wustl.edu](mailto:harrisj@wustl.edu)
+
+* Connect with me on Twitter [@jenineharris](https://twitter.com/jenineharris)
+&lt;br&gt;
+&lt;br&gt;
+
+&lt;img src="graphics/logo-ichad.png" width="600" style="display: block; margin: auto;" /&gt;
+
+
+
+
+&lt;!-- adjust font size in this css code chunk, currently 80 --&gt;
+
+&lt;style type="text/css"&gt;
+.remark-code{line-height: 1.5; font-size: 80%}
+
+@media print {
+  .has-continuation {
+    display: block;
+  }
+}
+
+code.r.hljs.remark-code{
+  position: relative;
+  overflow-x: hidden;
+}
+
+
+code.r.hljs.remark-code:hover{
+  overflow-x:visible;
+  width: 500px;
+  border-style: solid;
+}
+&lt;/style&gt;
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
