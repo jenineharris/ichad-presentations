@@ -1,0 +1,4643 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introduction to R</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.7/header-attrs.js"></script>
+    <link href="libs/table1-1.0/table1_defaults.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introduction to R
+## Tables and Figures in R
+
+---
+
+
+
+
+
+
+
+## Welcome!
+
+This tutorial will demonstrate how to create basic tables and figures in R
+
+To follow along with the workshop in R, you will need to have **already installed** R and R Studio
+
+---
+
+## How to follow along and participate
+
+* Open R Studio
+
+* Install the `table1`, `here`, `tidyverse`, and `haven` if you do not have them already
+
+* Open the workshop R Markdown file and click on the **tiny** green arrow on the top right corner of the gray shaded area (this is a code chunk!) that contains this: 
+
+
+```r
+library(package = "here")
+library(package = "tidyverse")
+library(package = "haven")
+library(package = "table1")
+```
+
+* The arrow will run all the code in that "chunk" of code
+
+---
+
+## The data set
+
+* We will be using the **Global Attitudes &amp; Trends** data set from the **Pew Internet &amp; American Life** website 
+
+    + If needed, download the data and documentation from this website: &lt;a href = "https://www.pewresearch.org/global/datasets/"&gt;https://www.pewresearch.org/global/datasets/&lt;/a&gt;
+    
+---
+
+## Importing data into R
+
+* Before running this code, make sure the participant file and the data file are saved in the same folder on your computer
+
+
+```r
+# use here so that R looks in the same folder you are in
+here()
+```
+
+```
+[1] "/Users/harrisj/Box/service/ichad-workshops"
+```
+
+```r
+# use read_spss function to read the spss file 
+globalData2019 &lt;- read_spss(file = "Pew Research Center Global Attitudes Spring 2019 Dataset WEB.sav")
+```
+
+---
+
+## Data cleaning (revise from prior workshop)
+
+
+```r
+globalData2019clean &lt;- globalData2019 %&gt;%
+  filter(country %in% c(16, 21, 26, 34)) %&gt;% 
+  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS, 
+         ECON_SIT, LADDER_NOW) %&gt;% 
+  zap_labels() %&gt;%
+  mutate(AGE = na_if(AGE, 98)) %&gt;% 
+  mutate(AGE = na_if(AGE, 99)) %&gt;% 
+  mutate(LADDER_NOW = na_if(LADDER_NOW, 98)) %&gt;% 
+  mutate(LADDER_NOW = na_if(LADDER_NOW, 99)) %&gt;% 
+  mutate(country = recode_factor(country,
+                             '16' = 'Kenya',
+                             '21' = 'Nigeria',
+                             '26' = 'South Africa',
+                             '34' = 'United States')) %&gt;%
+  mutate(SEX = recode_factor(SEX,
+                             '1' = 'Male',
+                             '2' = 'Female')) %&gt;% 
+  mutate(BETTER_GENDER = recode_factor(BETTER_GENDER,
+                                    '1' = 'Men',
+                                    '2' = 'Women',
+                                    '3' = 'Same/both equally',
+                                    '8' = NA_character_,
+                                    '9' = NA_character_)) %&gt;% 
+  mutate(COUNTRY_SATIS = recode_factor(COUNTRY_SATIS,
+                                       '1' = 'Satisfied',
+                                       '2' = 'Dissatisfied',
+                                       '8' = NA_character_,
+                                       '9' = NA_character_)) %&gt;% 
+  mutate(ECON_SIT = recode_factor(ECON_SIT,
+                                  '1' = 'Very good',
+                                  '2' = 'Somewhat good',
+                                  '3' = 'Somewhat bad',
+                                  '4' = 'Very bad',
+                                  '8' = NA_character_,
+                                  '9' = NA_character_)) 
+```
+
+---
+
+## Check your work
+
+
+```r
+summary(object = globalData2019clean)
+```
+
+```
+          country         SEX            AGE                  BETTER_GENDER 
+ Kenya        :1019   Male  :2592   Min.   :18.00   Men              :2340  
+ Nigeria      : 995   Female:2409   1st Qu.:25.00   Women            :1303  
+ South Africa :1484                 Median :35.00   Same/both equally:1134  
+ United States:1503                 Mean   :39.44   NA's             : 224  
+                                    3rd Qu.:51.00                           
+                                    Max.   :97.00                           
+                                    NA's   :116                             
+      COUNTRY_SATIS           ECON_SIT      LADDER_NOW    
+ Satisfied   :1370   Very good    : 648   Min.   : 0.000  
+ Dissatisfied:3531   Somewhat good:1620   1st Qu.: 4.000  
+ NA's        : 100   Somewhat bad :1265   Median : 6.000  
+                     Very bad     :1408   Mean   : 6.066  
+                     NA's         :  60   3rd Qu.: 8.000  
+                                          Max.   :10.000  
+                                          NA's   :82      
+```
+
+---
+
+## Basic table with labels
+
+* Add labels for the variables
+
+
+```r
+label(globalData2019clean$SEX) &lt;- "Sex"
+label(globalData2019clean$AGE) &lt;- "Age (years)" 
+label(globalData2019clean$BETTER_GENDER) &lt;- "Who has a better life in this country"
+label(globalData2019clean$COUNTRY_SATIS) &lt;- "Satisfied or dissatisfied with the way things are going in (country)"
+label(globalData2019clean$ECON_SIT) &lt;- "How would you describe the current economic situation (country)" 
+label(globalData2019clean$LADDER_NOW) &lt;- "Where are you between worst possible life (0) to best possible life (10)"
+```
+
+---
+
+## Table with labels
+
+
+```r
+table1(~ AGE + LADDER_NOW + BETTER_GENDER + COUNTRY_SATIS + ECON_SIT | SEX,
+       data = globalData2019clean, overall = FALSE)
+```
+
+<div class="Rtable1"><table class="Rtable1">
+<thead>
+<tr>
+<th class='rowlabel firstrow lastrow'></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Male<br><span class='stratn'>(N=2592)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Female<br><span class='stratn'>(N=2409)</span></span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Age (years)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Mean (SD)</td>
+<td>39.8 (17.2)</td>
+<td>39.0 (17.2)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Median [Min, Max]</td>
+<td>36.0 [18.0, 97.0]</td>
+<td>35.0 [18.0, 97.0]</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>40 (1.5%)</td>
+<td class='lastrow'>76 (3.2%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Where are you between worst possible life (0) to best possible life (10)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Mean (SD)</td>
+<td>6.00 (2.83)</td>
+<td>6.14 (2.98)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Median [Min, Max]</td>
+<td>6.00 [0, 10.0]</td>
+<td>6.00 [0, 10.0]</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>38 (1.5%)</td>
+<td class='lastrow'>44 (1.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Who has a better life in this country</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Men</td>
+<td>1172 (45.2%)</td>
+<td>1168 (48.5%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Women</td>
+<td>699 (27.0%)</td>
+<td>604 (25.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Same/both equally</td>
+<td>611 (23.6%)</td>
+<td>523 (21.7%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>110 (4.2%)</td>
+<td class='lastrow'>114 (4.7%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Satisfied or dissatisfied with the way things are going in (country)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Satisfied</td>
+<td>745 (28.7%)</td>
+<td>625 (25.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Dissatisfied</td>
+<td>1783 (68.8%)</td>
+<td>1748 (72.6%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>64 (2.5%)</td>
+<td class='lastrow'>36 (1.5%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>How would you describe the current economic situation (country)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Very good</td>
+<td>405 (15.6%)</td>
+<td>243 (10.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Somewhat good</td>
+<td>852 (32.9%)</td>
+<td>768 (31.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Somewhat bad</td>
+<td>639 (24.7%)</td>
+<td>626 (26.0%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Very bad</td>
+<td>664 (25.6%)</td>
+<td>744 (30.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>32 (1.2%)</td>
+<td class='lastrow'>28 (1.2%)</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+---
+
+## Customize the table: Choosing stats to display
+
+* Typically continuous variables would use mean and standard deviation -or- median and interquartile range (IQR), but not both 
+
+* Use the `render.continuous` argument to change what is displayed for continuous variables
+
+* Options include N, NMISS, MEAN, SD, CV, GMEAN, GCV, MEDIAN, MIN, MAX, IQR, Q1, Q2, Q3, T1, T2, FREQ, PCT (see help documentation for `stats.default` for definitions)
+
+
+---
+
+## Customized table with mean and standard deviation
+
+
+```r
+table1(~ AGE + LADDER_NOW + BETTER_GENDER + COUNTRY_SATIS + ECON_SIT | SEX,
+       data = globalData2019clean, overall = FALSE,
+       render.continuous = c(. = "Mean (SD)"))
+```
+
+<div class="Rtable1"><table class="Rtable1">
+<thead>
+<tr>
+<th class='rowlabel firstrow lastrow'></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Male<br><span class='stratn'>(N=2592)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Female<br><span class='stratn'>(N=2409)</span></span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Age (years)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Mean (SD)</td>
+<td>39.8 (17.2)</td>
+<td>39.0 (17.2)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>40 (1.5%)</td>
+<td class='lastrow'>76 (3.2%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Where are you between worst possible life (0) to best possible life (10)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Mean (SD)</td>
+<td>6.00 (2.83)</td>
+<td>6.14 (2.98)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>38 (1.5%)</td>
+<td class='lastrow'>44 (1.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Who has a better life in this country</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Men</td>
+<td>1172 (45.2%)</td>
+<td>1168 (48.5%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Women</td>
+<td>699 (27.0%)</td>
+<td>604 (25.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Same/both equally</td>
+<td>611 (23.6%)</td>
+<td>523 (21.7%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>110 (4.2%)</td>
+<td class='lastrow'>114 (4.7%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Satisfied or dissatisfied with the way things are going in (country)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Satisfied</td>
+<td>745 (28.7%)</td>
+<td>625 (25.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Dissatisfied</td>
+<td>1783 (68.8%)</td>
+<td>1748 (72.6%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>64 (2.5%)</td>
+<td class='lastrow'>36 (1.5%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>How would you describe the current economic situation (country)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Very good</td>
+<td>405 (15.6%)</td>
+<td>243 (10.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Somewhat good</td>
+<td>852 (32.9%)</td>
+<td>768 (31.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Somewhat bad</td>
+<td>639 (24.7%)</td>
+<td>626 (26.0%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Very bad</td>
+<td>664 (25.6%)</td>
+<td>744 (30.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>32 (1.2%)</td>
+<td class='lastrow'>28 (1.2%)</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+---
+
+## Customize the table: Change table appearance
+
+* There are several options for appearance that can be changed using the `topclass` argument with the `table1()` function
+
+    + zebra: alternating shaded and unshaded rows (zebra stripes) 
+    
+    + grid: show all grid lines 
+    
+    + shade: shade the header rows in gray
+    
+    + times: use a serif font
+    
+    + center: center all columns, including the row labels column 
+    
+* Argument must start with `Rtable1-`
+
+   + For multiple arguments, separate with a space
+    
+
+---
+
+## Customize the table: Change table appearance example
+
+
+```r
+table1(~ AGE + LADDER_NOW + BETTER_GENDER + COUNTRY_SATIS + ECON_SIT | SEX,
+       data = globalData2019clean, overall = FALSE,
+       render.continuous = c(. = "Mean (SD)"), 
+       topclass = "Rtable1-times Rtable1-grid Rtable1-shade")
+```
+
+<div class="Rtable1"><table class="Rtable1-times Rtable1-grid Rtable1-shade">
+<thead>
+<tr>
+<th class='rowlabel firstrow lastrow'></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Male<br><span class='stratn'>(N=2592)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Female<br><span class='stratn'>(N=2409)</span></span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Age (years)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Mean (SD)</td>
+<td>39.8 (17.2)</td>
+<td>39.0 (17.2)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>40 (1.5%)</td>
+<td class='lastrow'>76 (3.2%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Where are you between worst possible life (0) to best possible life (10)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Mean (SD)</td>
+<td>6.00 (2.83)</td>
+<td>6.14 (2.98)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>38 (1.5%)</td>
+<td class='lastrow'>44 (1.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Who has a better life in this country</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Men</td>
+<td>1172 (45.2%)</td>
+<td>1168 (48.5%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Women</td>
+<td>699 (27.0%)</td>
+<td>604 (25.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Same/both equally</td>
+<td>611 (23.6%)</td>
+<td>523 (21.7%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>110 (4.2%)</td>
+<td class='lastrow'>114 (4.7%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Satisfied or dissatisfied with the way things are going in (country)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Satisfied</td>
+<td>745 (28.7%)</td>
+<td>625 (25.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Dissatisfied</td>
+<td>1783 (68.8%)</td>
+<td>1748 (72.6%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>64 (2.5%)</td>
+<td class='lastrow'>36 (1.5%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>How would you describe the current economic situation (country)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Very good</td>
+<td>405 (15.6%)</td>
+<td>243 (10.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Somewhat good</td>
+<td>852 (32.9%)</td>
+<td>768 (31.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Somewhat bad</td>
+<td>639 (24.7%)</td>
+<td>626 (26.0%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Very bad</td>
+<td>664 (25.6%)</td>
+<td>744 (30.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>32 (1.2%)</td>
+<td class='lastrow'>28 (1.2%)</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+---
+
+## Customize the table: Use multiple variables to stratify
+
+
+```r
+table1(~ AGE + LADDER_NOW + BETTER_GENDER + COUNTRY_SATIS + ECON_SIT | country*SEX,
+       data = globalData2019clean, overall = FALSE,
+       render.continuous = c(. = "Mean (SD)"), 
+       topclass = "Rtable1-times Rtable1-grid")
+```
+
+<div class="Rtable1"><table class="Rtable1-times Rtable1-grid">
+<thead>
+<tr>
+<th class="grouplabel"></th>
+<th colspan="2" class="grouplabel"><div>Kenya</div></th>
+<th colspan="2" class="grouplabel"><div>Nigeria</div></th>
+<th colspan="2" class="grouplabel"><div>South Africa</div></th>
+<th colspan="2" class="grouplabel"><div>United States</div></th>
+</tr>
+<tr>
+<th class='rowlabel firstrow lastrow'></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Male<br><span class='stratn'>(N=498)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Female<br><span class='stratn'>(N=521)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Male<br><span class='stratn'>(N=572)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Female<br><span class='stratn'>(N=423)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Male<br><span class='stratn'>(N=642)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Female<br><span class='stratn'>(N=842)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Male<br><span class='stratn'>(N=880)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Female<br><span class='stratn'>(N=623)</span></span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Age (years)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Mean (SD)</td>
+<td>34.2 (14.8)</td>
+<td>31.6 (11.2)</td>
+<td>33.4 (12.6)</td>
+<td>30.9 (10.8)</td>
+<td>35.4 (14.6)</td>
+<td>37.2 (15.2)</td>
+<td>50.3 (18.0)</td>
+<td>53.2 (18.7)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>19 (3.8%)</td>
+<td class='lastrow'>29 (5.6%)</td>
+<td class='lastrow'>1 (0.2%)</td>
+<td class='lastrow'>0 (0%)</td>
+<td class='lastrow'>8 (1.2%)</td>
+<td class='lastrow'>31 (3.7%)</td>
+<td class='lastrow'>12 (1.4%)</td>
+<td class='lastrow'>16 (2.6%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Where are you between worst possible life (0) to best possible life (10)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Mean (SD)</td>
+<td>4.81 (3.01)</td>
+<td>5.54 (3.19)</td>
+<td>5.86 (2.75)</td>
+<td>6.00 (2.88)</td>
+<td>5.78 (3.32)</td>
+<td>5.85 (3.37)</td>
+<td>6.91 (1.97)</td>
+<td>7.13 (1.87)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>3 (0.6%)</td>
+<td class='lastrow'>8 (1.5%)</td>
+<td class='lastrow'>16 (2.8%)</td>
+<td class='lastrow'>9 (2.1%)</td>
+<td class='lastrow'>10 (1.6%)</td>
+<td class='lastrow'>20 (2.4%)</td>
+<td class='lastrow'>9 (1.0%)</td>
+<td class='lastrow'>7 (1.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Who has a better life in this country</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Men</td>
+<td>197 (39.6%)</td>
+<td>245 (47.0%)</td>
+<td>280 (49.0%)</td>
+<td>168 (39.7%)</td>
+<td>243 (37.9%)</td>
+<td>365 (43.3%)</td>
+<td>452 (51.4%)</td>
+<td>390 (62.6%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Women</td>
+<td>191 (38.4%)</td>
+<td>156 (29.9%)</td>
+<td>127 (22.2%)</td>
+<td>104 (24.6%)</td>
+<td>236 (36.8%)</td>
+<td>275 (32.7%)</td>
+<td>145 (16.5%)</td>
+<td>69 (11.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Same/both equally</td>
+<td>100 (20.1%)</td>
+<td>98 (18.8%)</td>
+<td>148 (25.9%)</td>
+<td>135 (31.9%)</td>
+<td>149 (23.2%)</td>
+<td>166 (19.7%)</td>
+<td>214 (24.3%)</td>
+<td>124 (19.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>10 (2.0%)</td>
+<td class='lastrow'>22 (4.2%)</td>
+<td class='lastrow'>17 (3.0%)</td>
+<td class='lastrow'>16 (3.8%)</td>
+<td class='lastrow'>14 (2.2%)</td>
+<td class='lastrow'>36 (4.3%)</td>
+<td class='lastrow'>69 (7.8%)</td>
+<td class='lastrow'>40 (6.4%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Satisfied or dissatisfied with the way things are going in (country)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Satisfied</td>
+<td>121 (24.3%)</td>
+<td>177 (34.0%)</td>
+<td>124 (21.7%)</td>
+<td>65 (15.4%)</td>
+<td>170 (26.5%)</td>
+<td>221 (26.2%)</td>
+<td>330 (37.5%)</td>
+<td>162 (26.0%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Dissatisfied</td>
+<td>366 (73.5%)</td>
+<td>335 (64.3%)</td>
+<td>445 (77.8%)</td>
+<td>355 (83.9%)</td>
+<td>464 (72.3%)</td>
+<td>611 (72.6%)</td>
+<td>508 (57.7%)</td>
+<td>447 (71.7%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>11 (2.2%)</td>
+<td class='lastrow'>9 (1.7%)</td>
+<td class='lastrow'>3 (0.5%)</td>
+<td class='lastrow'>3 (0.7%)</td>
+<td class='lastrow'>8 (1.2%)</td>
+<td class='lastrow'>10 (1.2%)</td>
+<td class='lastrow'>42 (4.8%)</td>
+<td class='lastrow'>14 (2.2%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>How would you describe the current economic situation (country)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Very good</td>
+<td>34 (6.8%)</td>
+<td>33 (6.3%)</td>
+<td>36 (6.3%)</td>
+<td>20 (4.7%)</td>
+<td>77 (12.0%)</td>
+<td>97 (11.5%)</td>
+<td>258 (29.3%)</td>
+<td>93 (14.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Somewhat good</td>
+<td>169 (33.9%)</td>
+<td>164 (31.5%)</td>
+<td>160 (28.0%)</td>
+<td>99 (23.4%)</td>
+<td>167 (26.0%)</td>
+<td>231 (27.4%)</td>
+<td>356 (40.5%)</td>
+<td>274 (44.0%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Somewhat bad</td>
+<td>144 (28.9%)</td>
+<td>149 (28.6%)</td>
+<td>163 (28.5%)</td>
+<td>103 (24.3%)</td>
+<td>155 (24.1%)</td>
+<td>203 (24.1%)</td>
+<td>177 (20.1%)</td>
+<td>171 (27.4%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Very bad</td>
+<td>146 (29.3%)</td>
+<td>174 (33.4%)</td>
+<td>209 (36.5%)</td>
+<td>197 (46.6%)</td>
+<td>235 (36.6%)</td>
+<td>294 (34.9%)</td>
+<td>74 (8.4%)</td>
+<td>79 (12.7%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>5 (1.0%)</td>
+<td class='lastrow'>1 (0.2%)</td>
+<td class='lastrow'>4 (0.7%)</td>
+<td class='lastrow'>4 (0.9%)</td>
+<td class='lastrow'>8 (1.2%)</td>
+<td class='lastrow'>17 (2.0%)</td>
+<td class='lastrow'>15 (1.7%)</td>
+<td class='lastrow'>6 (1.0%)</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+---
+
+## Advanced table customization
+
+* Write functions to include other statistics like p-values 
+
+    + Use the `extra.col` argument in `table1()` to add custom columns
+
+* Incorporate style sheets (CSS) to change other aspects of the formatting 
+
+    + Written in the YAML of your R Markdown document 
+    
+* See https://cran.r-project.org/web/packages/table1/vignettes/table1-examples.html for examples of both of these
+
+---
+
+## BREAK
+
+* Something to try on your break 
+
+    + Copy the table code from the previous code chunk 
+    
+    + After the final quotation mark inside the parentheses add a comma and hit enter
+    
+    + On the new line, type `footnote = "This is a footnote to the table."`
+    
+    + Change the order of `country*SEX` to be `SEX*country`
+    
+    + Run the code and see what happens 
+    
+    + Edit the footnote as you see fit 
+    
+    + Play with other formatting and content of the table 
+
+---
+
+## Adding footnotes, flipping stratification, and changing format
+
+
+```r
+table1(~ AGE + LADDER_NOW + BETTER_GENDER + COUNTRY_SATIS + ECON_SIT | SEX*country,
+       data = globalData2019clean, overall = FALSE,
+       render.continuous = c(. = "Mean (SD)"), 
+       topclass = "Rtable1-times Rtable1-shade",
+       footnote = "This is a footnote to the table.")
+```
+
+<div class="Rtable1"><table class="Rtable1-times Rtable1-shade">
+<thead>
+<tr>
+<th class="grouplabel"></th>
+<th colspan="4" class="grouplabel"><div>Male</div></th>
+<th colspan="4" class="grouplabel"><div>Female</div></th>
+</tr>
+<tr>
+<th class='rowlabel firstrow lastrow'></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Kenya<br><span class='stratn'>(N=498)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Nigeria<br><span class='stratn'>(N=572)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>South Africa<br><span class='stratn'>(N=642)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>United States<br><span class='stratn'>(N=880)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Kenya<br><span class='stratn'>(N=521)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Nigeria<br><span class='stratn'>(N=423)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>South Africa<br><span class='stratn'>(N=842)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>United States<br><span class='stratn'>(N=623)</span></span></th>
+</tr>
+<tfoot><tr><td colspan="9" class="Rtable1-footnote"><p>This is a footnote to the table.</p>
+</td></tr></tfoot>
+</thead>
+<tbody>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Age (years)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Mean (SD)</td>
+<td>34.2 (14.8)</td>
+<td>33.4 (12.6)</td>
+<td>35.4 (14.6)</td>
+<td>50.3 (18.0)</td>
+<td>31.6 (11.2)</td>
+<td>30.9 (10.8)</td>
+<td>37.2 (15.2)</td>
+<td>53.2 (18.7)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>19 (3.8%)</td>
+<td class='lastrow'>1 (0.2%)</td>
+<td class='lastrow'>8 (1.2%)</td>
+<td class='lastrow'>12 (1.4%)</td>
+<td class='lastrow'>29 (5.6%)</td>
+<td class='lastrow'>0 (0%)</td>
+<td class='lastrow'>31 (3.7%)</td>
+<td class='lastrow'>16 (2.6%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Where are you between worst possible life (0) to best possible life (10)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Mean (SD)</td>
+<td>4.81 (3.01)</td>
+<td>5.86 (2.75)</td>
+<td>5.78 (3.32)</td>
+<td>6.91 (1.97)</td>
+<td>5.54 (3.19)</td>
+<td>6.00 (2.88)</td>
+<td>5.85 (3.37)</td>
+<td>7.13 (1.87)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>3 (0.6%)</td>
+<td class='lastrow'>16 (2.8%)</td>
+<td class='lastrow'>10 (1.6%)</td>
+<td class='lastrow'>9 (1.0%)</td>
+<td class='lastrow'>8 (1.5%)</td>
+<td class='lastrow'>9 (2.1%)</td>
+<td class='lastrow'>20 (2.4%)</td>
+<td class='lastrow'>7 (1.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Who has a better life in this country</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Men</td>
+<td>197 (39.6%)</td>
+<td>280 (49.0%)</td>
+<td>243 (37.9%)</td>
+<td>452 (51.4%)</td>
+<td>245 (47.0%)</td>
+<td>168 (39.7%)</td>
+<td>365 (43.3%)</td>
+<td>390 (62.6%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Women</td>
+<td>191 (38.4%)</td>
+<td>127 (22.2%)</td>
+<td>236 (36.8%)</td>
+<td>145 (16.5%)</td>
+<td>156 (29.9%)</td>
+<td>104 (24.6%)</td>
+<td>275 (32.7%)</td>
+<td>69 (11.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Same/both equally</td>
+<td>100 (20.1%)</td>
+<td>148 (25.9%)</td>
+<td>149 (23.2%)</td>
+<td>214 (24.3%)</td>
+<td>98 (18.8%)</td>
+<td>135 (31.9%)</td>
+<td>166 (19.7%)</td>
+<td>124 (19.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>10 (2.0%)</td>
+<td class='lastrow'>17 (3.0%)</td>
+<td class='lastrow'>14 (2.2%)</td>
+<td class='lastrow'>69 (7.8%)</td>
+<td class='lastrow'>22 (4.2%)</td>
+<td class='lastrow'>16 (3.8%)</td>
+<td class='lastrow'>36 (4.3%)</td>
+<td class='lastrow'>40 (6.4%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Satisfied or dissatisfied with the way things are going in (country)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Satisfied</td>
+<td>121 (24.3%)</td>
+<td>124 (21.7%)</td>
+<td>170 (26.5%)</td>
+<td>330 (37.5%)</td>
+<td>177 (34.0%)</td>
+<td>65 (15.4%)</td>
+<td>221 (26.2%)</td>
+<td>162 (26.0%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Dissatisfied</td>
+<td>366 (73.5%)</td>
+<td>445 (77.8%)</td>
+<td>464 (72.3%)</td>
+<td>508 (57.7%)</td>
+<td>335 (64.3%)</td>
+<td>355 (83.9%)</td>
+<td>611 (72.6%)</td>
+<td>447 (71.7%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>11 (2.2%)</td>
+<td class='lastrow'>3 (0.5%)</td>
+<td class='lastrow'>8 (1.2%)</td>
+<td class='lastrow'>42 (4.8%)</td>
+<td class='lastrow'>9 (1.7%)</td>
+<td class='lastrow'>3 (0.7%)</td>
+<td class='lastrow'>10 (1.2%)</td>
+<td class='lastrow'>14 (2.2%)</td>
+</tr>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>How would you describe the current economic situation (country)</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>Very good</td>
+<td>34 (6.8%)</td>
+<td>36 (6.3%)</td>
+<td>77 (12.0%)</td>
+<td>258 (29.3%)</td>
+<td>33 (6.3%)</td>
+<td>20 (4.7%)</td>
+<td>97 (11.5%)</td>
+<td>93 (14.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Somewhat good</td>
+<td>169 (33.9%)</td>
+<td>160 (28.0%)</td>
+<td>167 (26.0%)</td>
+<td>356 (40.5%)</td>
+<td>164 (31.5%)</td>
+<td>99 (23.4%)</td>
+<td>231 (27.4%)</td>
+<td>274 (44.0%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Somewhat bad</td>
+<td>144 (28.9%)</td>
+<td>163 (28.5%)</td>
+<td>155 (24.1%)</td>
+<td>177 (20.1%)</td>
+<td>149 (28.6%)</td>
+<td>103 (24.3%)</td>
+<td>203 (24.1%)</td>
+<td>171 (27.4%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>Very bad</td>
+<td>146 (29.3%)</td>
+<td>209 (36.5%)</td>
+<td>235 (36.6%)</td>
+<td>74 (8.4%)</td>
+<td>174 (33.4%)</td>
+<td>197 (46.6%)</td>
+<td>294 (34.9%)</td>
+<td>79 (12.7%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>Missing</td>
+<td class='lastrow'>5 (1.0%)</td>
+<td class='lastrow'>4 (0.7%)</td>
+<td class='lastrow'>8 (1.2%)</td>
+<td class='lastrow'>15 (1.7%)</td>
+<td class='lastrow'>1 (0.2%)</td>
+<td class='lastrow'>4 (0.9%)</td>
+<td class='lastrow'>17 (2.0%)</td>
+<td class='lastrow'>6 (1.0%)</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+---
+
+## Using the ggplot2 package for plotting
+
+* Part of the `tidyverse` set of packages in R
+
+* `gg` stands for **grammar** of **graphics**
+
+* Plots created in `ggplot2` are built in layers 
+
+* Let's look at some examples
+
+* First, a bar chart...
+
+---
+
+count: false
+ 
+## Basic bar chart
+.panel1-my_bar-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-my_bar-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Basic bar chart
+.panel1-my_bar-auto[
+
+```r
+globalData2019clean %&gt;%
+* ggplot(aes(x = SEX))
+```
+]
+ 
+.panel2-my_bar-auto[
+![](viz_files/figure-html/my_bar_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Basic bar chart
+.panel1-my_bar-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX)) +
+* geom_bar()
+```
+]
+ 
+.panel2-my_bar-auto[
+![](viz_files/figure-html/my_bar_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-my_bar-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-my_bar-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-my_bar-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+count: false
+ 
+## Fancy bar chart
+.panel1-my_bar_fancy-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-my_bar_fancy-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Fancy bar chart
+.panel1-my_bar_fancy-auto[
+
+```r
+globalData2019clean %&gt;%
+* ggplot(aes(x = SEX))
+```
+]
+ 
+.panel2-my_bar_fancy-auto[
+![](viz_files/figure-html/my_bar_fancy_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy bar chart
+.panel1-my_bar_fancy-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX)) +
+* geom_bar(fill = "deeppink")
+```
+]
+ 
+.panel2-my_bar_fancy-auto[
+![](viz_files/figure-html/my_bar_fancy_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy bar chart
+.panel1-my_bar_fancy-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX)) +
+  geom_bar(fill = "deeppink") +
+* labs(x = "Sex",
+*      y = "Frequency",
+*      title = "Sex of 5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.")
+```
+]
+ 
+.panel2-my_bar_fancy-auto[
+![](viz_files/figure-html/my_bar_fancy_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy bar chart
+.panel1-my_bar_fancy-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX)) +
+  geom_bar(fill = "deeppink") +
+  labs(x = "Sex",
+       y = "Frequency",
+       title = "Sex of 5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
+* theme_minimal()
+```
+]
+ 
+.panel2-my_bar_fancy-auto[
+![](viz_files/figure-html/my_bar_fancy_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-my_bar_fancy-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-my_bar_fancy-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-my_bar_fancy-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+count: false
+ 
+## Fancy bar chart with colors
+.panel1-my_bar_fancy_colors-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-my_bar_fancy_colors-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Fancy bar chart with colors
+.panel1-my_bar_fancy_colors-auto[
+
+```r
+globalData2019clean %&gt;%
+* ggplot(aes(x = SEX, fill = SEX))
+```
+]
+ 
+.panel2-my_bar_fancy_colors-auto[
+![](viz_files/figure-html/my_bar_fancy_colors_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy bar chart with colors
+.panel1-my_bar_fancy_colors-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, fill = SEX)) +
+* geom_bar()
+```
+]
+ 
+.panel2-my_bar_fancy_colors-auto[
+![](viz_files/figure-html/my_bar_fancy_colors_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy bar chart with colors
+.panel1-my_bar_fancy_colors-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, fill = SEX)) +
+  geom_bar() +
+* labs(x = "Sex",
+*      y = "Frequency",
+*      title = "Sex of 5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.")
+```
+]
+ 
+.panel2-my_bar_fancy_colors-auto[
+![](viz_files/figure-html/my_bar_fancy_colors_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy bar chart with colors
+.panel1-my_bar_fancy_colors-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, fill = SEX)) +
+  geom_bar() +
+  labs(x = "Sex",
+       y = "Frequency",
+       title = "Sex of 5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
+* scale_fill_brewer(palette = "Set2")
+```
+]
+ 
+.panel2-my_bar_fancy_colors-auto[
+![](viz_files/figure-html/my_bar_fancy_colors_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy bar chart with colors
+.panel1-my_bar_fancy_colors-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, fill = SEX)) +
+  geom_bar() +
+  labs(x = "Sex",
+       y = "Frequency",
+       title = "Sex of 5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
+  scale_fill_brewer(palette = "Set2") +
+* theme_minimal()
+```
+]
+ 
+.panel2-my_bar_fancy_colors-auto[
+![](viz_files/figure-html/my_bar_fancy_colors_auto_06_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-my_bar_fancy_colors-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-my_bar_fancy_colors-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-my_bar_fancy_colors-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+count: false
+ 
+## Fancy bar chart without legend
+.panel1-my_bar_fancy_legend-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-my_bar_fancy_legend-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Fancy bar chart without legend
+.panel1-my_bar_fancy_legend-auto[
+
+```r
+globalData2019clean %&gt;%
+* ggplot(aes(x = SEX, fill = SEX))
+```
+]
+ 
+.panel2-my_bar_fancy_legend-auto[
+![](viz_files/figure-html/my_bar_fancy_legend_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy bar chart without legend
+.panel1-my_bar_fancy_legend-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, fill = SEX)) +
+* geom_bar()
+```
+]
+ 
+.panel2-my_bar_fancy_legend-auto[
+![](viz_files/figure-html/my_bar_fancy_legend_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy bar chart without legend
+.panel1-my_bar_fancy_legend-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, fill = SEX)) +
+  geom_bar() +
+* labs(x = "Sex",
+*      y = "Frequency",
+*      title = "Sex of 5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.")
+```
+]
+ 
+.panel2-my_bar_fancy_legend-auto[
+![](viz_files/figure-html/my_bar_fancy_legend_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy bar chart without legend
+.panel1-my_bar_fancy_legend-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, fill = SEX)) +
+  geom_bar() +
+  labs(x = "Sex",
+       y = "Frequency",
+       title = "Sex of 5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
+* scale_fill_brewer(palette = "Set2")
+```
+]
+ 
+.panel2-my_bar_fancy_legend-auto[
+![](viz_files/figure-html/my_bar_fancy_legend_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy bar chart without legend
+.panel1-my_bar_fancy_legend-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, fill = SEX)) +
+  geom_bar() +
+  labs(x = "Sex",
+       y = "Frequency",
+       title = "Sex of 5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
+  scale_fill_brewer(palette = "Set2") +
+* theme_minimal()
+```
+]
+ 
+.panel2-my_bar_fancy_legend-auto[
+![](viz_files/figure-html/my_bar_fancy_legend_auto_06_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy bar chart without legend
+.panel1-my_bar_fancy_legend-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, fill = SEX)) +
+  geom_bar() +
+  labs(x = "Sex",
+       y = "Frequency",
+       title = "Sex of 5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal() +
+* theme(legend.position = "none")
+```
+]
+ 
+.panel2-my_bar_fancy_legend-auto[
+![](viz_files/figure-html/my_bar_fancy_legend_auto_07_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-my_bar_fancy_legend-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-my_bar_fancy_legend-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-my_bar_fancy_legend-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+## You try it!
+
+Make a bar chart of the `BETTER_GENDER` responses from survey participants with the Figure 1 code in your R Markdown file ().
+
+Edit the code to: 
+
+* Use `BETTER_GENDER` as the fill variable in the `ggplot()` layer
+
+* Change the color of the bars by replacing "Set2" with the name of another palette found on the &lt;a href = "https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/"&gt;https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/&lt;/a&gt; website
+
+* Add labels for the axes and a title inside the quote marks (see codebook for more about the question)
+
+* Replace `theme_minimal()` with another theme, you can find them here: https://ggplot2.tidyverse.org/reference/ggtheme.html
+
+When you have completed the changes, click the little green arrow on the top right of the code chunk to run the code.
+
+---
+
+count: false
+ 
+## You try it example
+.panel1-you-try-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-you-try-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## You try it example
+.panel1-you-try-auto[
+
+```r
+globalData2019clean %&gt;%
+* ggplot(aes(x = BETTER_GENDER, fill = BETTER_GENDER))
+```
+]
+ 
+.panel2-you-try-auto[
+![](viz_files/figure-html/you-try_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## You try it example
+.panel1-you-try-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = BETTER_GENDER, fill = BETTER_GENDER)) +
+* geom_bar()
+```
+]
+ 
+.panel2-you-try-auto[
+![](viz_files/figure-html/you-try_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## You try it example
+.panel1-you-try-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = BETTER_GENDER, fill = BETTER_GENDER)) +
+  geom_bar() +
+* labs(x = "Who has better life",
+*      y = "Frequency",
+*      title = "Opinion on quality of life by gender for\n5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.")
+```
+]
+ 
+.panel2-you-try-auto[
+![](viz_files/figure-html/you-try_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## You try it example
+.panel1-you-try-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = BETTER_GENDER, fill = BETTER_GENDER)) +
+  geom_bar() +
+  labs(x = "Who has better life",
+       y = "Frequency",
+       title = "Opinion on quality of life by gender for\n5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
+* scale_fill_brewer(palette = "Set2")
+```
+]
+ 
+.panel2-you-try-auto[
+![](viz_files/figure-html/you-try_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## You try it example
+.panel1-you-try-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = BETTER_GENDER, fill = BETTER_GENDER)) +
+  geom_bar() +
+  labs(x = "Who has better life",
+       y = "Frequency",
+       title = "Opinion on quality of life by gender for\n5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
+  scale_fill_brewer(palette = "Set2") +
+* theme_bw()
+```
+]
+ 
+.panel2-you-try-auto[
+![](viz_files/figure-html/you-try_auto_06_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## You try it example
+.panel1-you-try-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = BETTER_GENDER, fill = BETTER_GENDER)) +
+  geom_bar() +
+  labs(x = "Who has better life",
+       y = "Frequency",
+       title = "Opinion on quality of life by gender for\n5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
+  scale_fill_brewer(palette = "Set2") +
+  theme_bw() +
+* theme(legend.position = "none")
+```
+]
+ 
+.panel2-you-try-auto[
+![](viz_files/figure-html/you-try_auto_07_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-you-try-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-you-try-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-you-try-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+count: false
+ 
+## Stacked bar plot
+.panel1-stacked_bar-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-stacked_bar-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Stacked bar plot
+.panel1-stacked_bar-auto[
+
+```r
+globalData2019clean %&gt;%
+* drop_na(BETTER_GENDER)
+```
+]
+ 
+.panel2-stacked_bar-auto[
+
+```
+# A tibble: 4,777 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,767 more rows
+```
+]
+
+---
+count: false
+ 
+## Stacked bar plot
+.panel1-stacked_bar-auto[
+
+```r
+globalData2019clean %&gt;%
+  drop_na(BETTER_GENDER) %&gt;%
+* ggplot(aes(x = BETTER_GENDER, fill = SEX))
+```
+]
+ 
+.panel2-stacked_bar-auto[
+![](viz_files/figure-html/stacked_bar_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Stacked bar plot
+.panel1-stacked_bar-auto[
+
+```r
+globalData2019clean %&gt;%
+  drop_na(BETTER_GENDER) %&gt;%
+  ggplot(aes(x = BETTER_GENDER, fill = SEX)) +
+* geom_bar()
+```
+]
+ 
+.panel2-stacked_bar-auto[
+![](viz_files/figure-html/stacked_bar_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Stacked bar plot
+.panel1-stacked_bar-auto[
+
+```r
+globalData2019clean %&gt;%
+  drop_na(BETTER_GENDER) %&gt;%
+  ggplot(aes(x = BETTER_GENDER, fill = SEX)) +
+  geom_bar() +
+* labs(x = "Who has better life",
+*      y = "Frequency",
+*      title = "Who has a better life by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.")
+```
+]
+ 
+.panel2-stacked_bar-auto[
+![](viz_files/figure-html/stacked_bar_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Stacked bar plot
+.panel1-stacked_bar-auto[
+
+```r
+globalData2019clean %&gt;%
+  drop_na(BETTER_GENDER) %&gt;%
+  ggplot(aes(x = BETTER_GENDER, fill = SEX)) +
+  geom_bar() +
+  labs(x = "Who has better life",
+       y = "Frequency",
+       title = "Who has a better life by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.") +
+* scale_fill_brewer(palette = "Paired")
+```
+]
+ 
+.panel2-stacked_bar-auto[
+![](viz_files/figure-html/stacked_bar_auto_06_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Stacked bar plot
+.panel1-stacked_bar-auto[
+
+```r
+globalData2019clean %&gt;%
+  drop_na(BETTER_GENDER) %&gt;%
+  ggplot(aes(x = BETTER_GENDER, fill = SEX)) +
+  geom_bar() +
+  labs(x = "Who has better life",
+       y = "Frequency",
+       title = "Who has a better life by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.") +
+  scale_fill_brewer(palette = "Paired") +
+* theme_minimal()
+```
+]
+ 
+.panel2-stacked_bar-auto[
+![](viz_files/figure-html/stacked_bar_auto_07_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-stacked_bar-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-stacked_bar-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-stacked_bar-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-grouped_bar-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar-auto[
+
+```r
+globalData2019clean %&gt;%
+* drop_na(BETTER_GENDER)
+```
+]
+ 
+.panel2-grouped_bar-auto[
+
+```
+# A tibble: 4,777 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,767 more rows
+```
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar-auto[
+
+```r
+globalData2019clean %&gt;%
+  drop_na(BETTER_GENDER) %&gt;%
+* ggplot(aes(x = BETTER_GENDER, fill = SEX))
+```
+]
+ 
+.panel2-grouped_bar-auto[
+![](viz_files/figure-html/grouped_bar_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar-auto[
+
+```r
+globalData2019clean %&gt;%
+  drop_na(BETTER_GENDER) %&gt;%
+  ggplot(aes(x = BETTER_GENDER, fill = SEX)) +
+* geom_bar(position = "dodge")
+```
+]
+ 
+.panel2-grouped_bar-auto[
+![](viz_files/figure-html/grouped_bar_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar-auto[
+
+```r
+globalData2019clean %&gt;%
+  drop_na(BETTER_GENDER) %&gt;%
+  ggplot(aes(x = BETTER_GENDER, fill = SEX)) +
+  geom_bar(position = "dodge") +
+* labs(x = "Who has better life",
+*      y = "Frequency",
+*      title = "Who has a better life by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
+*      fill = "Survey participant sex")
+```
+]
+ 
+.panel2-grouped_bar-auto[
+![](viz_files/figure-html/grouped_bar_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar-auto[
+
+```r
+globalData2019clean %&gt;%
+  drop_na(BETTER_GENDER) %&gt;%
+  ggplot(aes(x = BETTER_GENDER, fill = SEX)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Who has better life",
+       y = "Frequency",
+       title = "Who has a better life by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
+       fill = "Survey participant sex") +
+* scale_fill_brewer(palette = "Paired")
+```
+]
+ 
+.panel2-grouped_bar-auto[
+![](viz_files/figure-html/grouped_bar_auto_06_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar-auto[
+
+```r
+globalData2019clean %&gt;%
+  drop_na(BETTER_GENDER) %&gt;%
+  ggplot(aes(x = BETTER_GENDER, fill = SEX)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Who has better life",
+       y = "Frequency",
+       title = "Who has a better life by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
+       fill = "Survey participant sex") +
+  scale_fill_brewer(palette = "Paired") +
+* theme_minimal()
+```
+]
+ 
+.panel2-grouped_bar-auto[
+![](viz_files/figure-html/grouped_bar_auto_07_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-grouped_bar-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-grouped_bar-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-grouped_bar-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+## You try it!
+
+* Create a grouped bar plot for Figure 2 with `COUNTRY_SATIS` as the x-axis and `SEX` as the fill color 
+
+* Drop the `NA` values for `COUNTRY_SATIS`
+
+* Add good labels for the x-axis, y-axis, title (may need the codebook for this)
+
+* Format it using a palette you like  
+
+* Fix the legend title so it is "Participant sex"
+
+
+```r
+# Figure 2 code goes here
+```
+
+
+---
+
+count: false
+ 
+## Answer to You try it!
+.panel1-answerYti-auto[
+
+```r
+# Figure 2 code goes here
+*globalData2019clean
+```
+]
+ 
+.panel2-answerYti-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Answer to You try it!
+.panel1-answerYti-auto[
+
+```r
+# Figure 2 code goes here
+globalData2019clean %&gt;%
+* drop_na(COUNTRY_SATIS)
+```
+]
+ 
+.panel2-answerYti-auto[
+
+```
+# A tibble: 4,901 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,891 more rows
+```
+]
+
+---
+count: false
+ 
+## Answer to You try it!
+.panel1-answerYti-auto[
+
+```r
+# Figure 2 code goes here
+globalData2019clean %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+* ggplot(aes(x = COUNTRY_SATIS, fill = SEX))
+```
+]
+ 
+.panel2-answerYti-auto[
+![](viz_files/figure-html/answerYti_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Answer to You try it!
+.panel1-answerYti-auto[
+
+```r
+# Figure 2 code goes here
+globalData2019clean %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+  ggplot(aes(x = COUNTRY_SATIS, fill = SEX)) +
+* geom_bar(position = "dodge")
+```
+]
+ 
+.panel2-answerYti-auto[
+![](viz_files/figure-html/answerYti_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Answer to You try it!
+.panel1-answerYti-auto[
+
+```r
+# Figure 2 code goes here
+globalData2019clean %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+  ggplot(aes(x = COUNTRY_SATIS, fill = SEX)) +
+  geom_bar(position = "dodge") +
+* labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
+*      y = "Frequency",
+*      title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
+*      fill = "Participant sex")
+```
+]
+ 
+.panel2-answerYti-auto[
+![](viz_files/figure-html/answerYti_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Answer to You try it!
+.panel1-answerYti-auto[
+
+```r
+# Figure 2 code goes here
+globalData2019clean %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+  ggplot(aes(x = COUNTRY_SATIS, fill = SEX)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
+       y = "Frequency",
+       title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
+       fill = "Participant sex") +
+* scale_fill_brewer(palette = "Paired")
+```
+]
+ 
+.panel2-answerYti-auto[
+![](viz_files/figure-html/answerYti_auto_06_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Answer to You try it!
+.panel1-answerYti-auto[
+
+```r
+# Figure 2 code goes here
+globalData2019clean %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+  ggplot(aes(x = COUNTRY_SATIS, fill = SEX)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
+       y = "Frequency",
+       title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
+       fill = "Participant sex") +
+  scale_fill_brewer(palette = "Paired") +
+* theme_minimal()
+```
+]
+ 
+.panel2-answerYti-auto[
+![](viz_files/figure-html/answerYti_auto_07_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Answer to You try it!
+.panel1-answerYti-auto[
+
+```r
+# Figure 2 code goes here
+globalData2019clean %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+  ggplot(aes(x = COUNTRY_SATIS, fill = SEX)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
+       y = "Frequency",
+       title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
+       fill = "Participant sex") +
+  scale_fill_brewer(palette = "Paired") +
+  theme_minimal()
+```
+]
+ 
+.panel2-answerYti-auto[
+![](viz_files/figure-html/answerYti_auto_08_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-answerYti-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-answerYti-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-answerYti-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+count: false
+ 
+## Shorten long labels
+.panel1-longlabs-auto[
+
+```r
+# Figure 2 code goes here
+*globalData2019clean
+```
+]
+ 
+.panel2-longlabs-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Shorten long labels
+.panel1-longlabs-auto[
+
+```r
+# Figure 2 code goes here
+globalData2019clean %&gt;%
+* drop_na(COUNTRY_SATIS)
+```
+]
+ 
+.panel2-longlabs-auto[
+
+```
+# A tibble: 4,901 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,891 more rows
+```
+]
+
+---
+count: false
+ 
+## Shorten long labels
+.panel1-longlabs-auto[
+
+```r
+# Figure 2 code goes here
+globalData2019clean %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+* ggplot(aes(x = COUNTRY_SATIS, fill = SEX))
+```
+]
+ 
+.panel2-longlabs-auto[
+![](viz_files/figure-html/longlabs_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Shorten long labels
+.panel1-longlabs-auto[
+
+```r
+# Figure 2 code goes here
+globalData2019clean %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+  ggplot(aes(x = COUNTRY_SATIS, fill = SEX)) +
+* geom_bar(position = "dodge")
+```
+]
+ 
+.panel2-longlabs-auto[
+![](viz_files/figure-html/longlabs_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Shorten long labels
+.panel1-longlabs-auto[
+
+```r
+# Figure 2 code goes here
+globalData2019clean %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+  ggplot(aes(x = COUNTRY_SATIS, fill = SEX)) +
+  geom_bar(position = "dodge") +
+* labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
+*      y = "Frequency",
+*      title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
+*      fill = "Participant sex")
+```
+]
+ 
+.panel2-longlabs-auto[
+![](viz_files/figure-html/longlabs_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Shorten long labels
+.panel1-longlabs-auto[
+
+```r
+# Figure 2 code goes here
+globalData2019clean %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+  ggplot(aes(x = COUNTRY_SATIS, fill = SEX)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
+       y = "Frequency",
+       title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
+       fill = "Participant sex") +
+* scale_fill_brewer(palette = "Paired")
+```
+]
+ 
+.panel2-longlabs-auto[
+![](viz_files/figure-html/longlabs_auto_06_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Shorten long labels
+.panel1-longlabs-auto[
+
+```r
+# Figure 2 code goes here
+globalData2019clean %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+  ggplot(aes(x = COUNTRY_SATIS, fill = SEX)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
+       y = "Frequency",
+       title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
+       fill = "Participant sex") +
+  scale_fill_brewer(palette = "Paired") +
+* theme_minimal()
+```
+]
+ 
+.panel2-longlabs-auto[
+![](viz_files/figure-html/longlabs_auto_07_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Shorten long labels
+.panel1-longlabs-auto[
+
+```r
+# Figure 2 code goes here
+globalData2019clean %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+  ggplot(aes(x = COUNTRY_SATIS, fill = SEX)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
+       y = "Frequency",
+       title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
+       fill = "Participant sex") +
+  scale_fill_brewer(palette = "Paired") +
+  theme_minimal() +
+* scale_x_discrete(labels =
+*                    function(x)
+*                      str_wrap(x, width = 30))
+```
+]
+ 
+.panel2-longlabs-auto[
+![](viz_files/figure-html/longlabs_auto_08_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-longlabs-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-longlabs-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-longlabs-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+&lt;img src="graphics/onemillionrulesggplot.png" width="600" style="display: block; margin: auto;" /&gt;
+
+---
+
+count: false
+ 
+## Group percentages
+.panel1-percents-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-percents-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Group percentages
+.panel1-percents-auto[
+
+```r
+globalData2019clean %&gt;%
+* group_by(COUNTRY_SATIS, SEX)
+```
+]
+ 
+.panel2-percents-auto[
+
+```
+# A tibble: 5,001 x 7
+# Groups:   COUNTRY_SATIS, SEX [6]
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Group percentages
+.panel1-percents-auto[
+
+```r
+globalData2019clean %&gt;%
+  group_by(COUNTRY_SATIS, SEX) %&gt;%
+* count()
+```
+]
+ 
+.panel2-percents-auto[
+
+```
+# A tibble: 6 x 3
+# Groups:   COUNTRY_SATIS, SEX [6]
+  COUNTRY_SATIS SEX        n
+  &lt;fct&gt;         &lt;fct&gt;  &lt;int&gt;
+1 Satisfied     Male     745
+2 Satisfied     Female   625
+3 Dissatisfied  Male    1783
+4 Dissatisfied  Female  1748
+5 &lt;NA&gt;          Male      64
+6 &lt;NA&gt;          Female    36
+```
+]
+
+---
+count: false
+ 
+## Group percentages
+.panel1-percents-auto[
+
+```r
+globalData2019clean %&gt;%
+  group_by(COUNTRY_SATIS, SEX) %&gt;%
+  count() %&gt;%
+* group_by(COUNTRY_SATIS)
+```
+]
+ 
+.panel2-percents-auto[
+
+```
+# A tibble: 6 x 3
+# Groups:   COUNTRY_SATIS [3]
+  COUNTRY_SATIS SEX        n
+  &lt;fct&gt;         &lt;fct&gt;  &lt;int&gt;
+1 Satisfied     Male     745
+2 Satisfied     Female   625
+3 Dissatisfied  Male    1783
+4 Dissatisfied  Female  1748
+5 &lt;NA&gt;          Male      64
+6 &lt;NA&gt;          Female    36
+```
+]
+
+---
+count: false
+ 
+## Group percentages
+.panel1-percents-auto[
+
+```r
+globalData2019clean %&gt;%
+  group_by(COUNTRY_SATIS, SEX) %&gt;%
+  count() %&gt;%
+  group_by(COUNTRY_SATIS) %&gt;%
+* mutate(perc = 100 * (n / sum(n)))
+```
+]
+ 
+.panel2-percents-auto[
+
+```
+# A tibble: 6 x 4
+# Groups:   COUNTRY_SATIS [3]
+  COUNTRY_SATIS SEX        n  perc
+  &lt;fct&gt;         &lt;fct&gt;  &lt;int&gt; &lt;dbl&gt;
+1 Satisfied     Male     745  54.4
+2 Satisfied     Female   625  45.6
+3 Dissatisfied  Male    1783  50.5
+4 Dissatisfied  Female  1748  49.5
+5 &lt;NA&gt;          Male      64  64  
+6 &lt;NA&gt;          Female    36  36  
+```
+]
+
+&lt;style&gt;
+.panel1-percents-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-percents-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-percents-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar_perc-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-grouped_bar_perc-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar_perc-auto[
+
+```r
+globalData2019clean %&gt;%
+* group_by(COUNTRY_SATIS, SEX)
+```
+]
+ 
+.panel2-grouped_bar_perc-auto[
+
+```
+# A tibble: 5,001 x 7
+# Groups:   COUNTRY_SATIS, SEX [6]
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar_perc-auto[
+
+```r
+globalData2019clean %&gt;%
+  group_by(COUNTRY_SATIS, SEX) %&gt;%
+* count()
+```
+]
+ 
+.panel2-grouped_bar_perc-auto[
+
+```
+# A tibble: 6 x 3
+# Groups:   COUNTRY_SATIS, SEX [6]
+  COUNTRY_SATIS SEX        n
+  &lt;fct&gt;         &lt;fct&gt;  &lt;int&gt;
+1 Satisfied     Male     745
+2 Satisfied     Female   625
+3 Dissatisfied  Male    1783
+4 Dissatisfied  Female  1748
+5 &lt;NA&gt;          Male      64
+6 &lt;NA&gt;          Female    36
+```
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar_perc-auto[
+
+```r
+globalData2019clean %&gt;%
+  group_by(COUNTRY_SATIS, SEX) %&gt;%
+  count() %&gt;%
+* group_by(COUNTRY_SATIS)
+```
+]
+ 
+.panel2-grouped_bar_perc-auto[
+
+```
+# A tibble: 6 x 3
+# Groups:   COUNTRY_SATIS [3]
+  COUNTRY_SATIS SEX        n
+  &lt;fct&gt;         &lt;fct&gt;  &lt;int&gt;
+1 Satisfied     Male     745
+2 Satisfied     Female   625
+3 Dissatisfied  Male    1783
+4 Dissatisfied  Female  1748
+5 &lt;NA&gt;          Male      64
+6 &lt;NA&gt;          Female    36
+```
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar_perc-auto[
+
+```r
+globalData2019clean %&gt;%
+  group_by(COUNTRY_SATIS, SEX) %&gt;%
+  count() %&gt;%
+  group_by(COUNTRY_SATIS) %&gt;%
+* mutate(perc = 100 * (n / sum(n)))
+```
+]
+ 
+.panel2-grouped_bar_perc-auto[
+
+```
+# A tibble: 6 x 4
+# Groups:   COUNTRY_SATIS [3]
+  COUNTRY_SATIS SEX        n  perc
+  &lt;fct&gt;         &lt;fct&gt;  &lt;int&gt; &lt;dbl&gt;
+1 Satisfied     Male     745  54.4
+2 Satisfied     Female   625  45.6
+3 Dissatisfied  Male    1783  50.5
+4 Dissatisfied  Female  1748  49.5
+5 &lt;NA&gt;          Male      64  64  
+6 &lt;NA&gt;          Female    36  36  
+```
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar_perc-auto[
+
+```r
+globalData2019clean %&gt;%
+  group_by(COUNTRY_SATIS, SEX) %&gt;%
+  count() %&gt;%
+  group_by(COUNTRY_SATIS) %&gt;%
+  mutate(perc = 100 * (n / sum(n))) %&gt;%
+* drop_na(COUNTRY_SATIS)
+```
+]
+ 
+.panel2-grouped_bar_perc-auto[
+
+```
+# A tibble: 4 x 4
+# Groups:   COUNTRY_SATIS [2]
+  COUNTRY_SATIS SEX        n  perc
+  &lt;fct&gt;         &lt;fct&gt;  &lt;int&gt; &lt;dbl&gt;
+1 Satisfied     Male     745  54.4
+2 Satisfied     Female   625  45.6
+3 Dissatisfied  Male    1783  50.5
+4 Dissatisfied  Female  1748  49.5
+```
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar_perc-auto[
+
+```r
+globalData2019clean %&gt;%
+  group_by(COUNTRY_SATIS, SEX) %&gt;%
+  count() %&gt;%
+  group_by(COUNTRY_SATIS) %&gt;%
+  mutate(perc = 100 * (n / sum(n))) %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+* ggplot(aes(x = COUNTRY_SATIS, y = perc, fill = SEX))
+```
+]
+ 
+.panel2-grouped_bar_perc-auto[
+![](viz_files/figure-html/grouped_bar_perc_auto_07_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar_perc-auto[
+
+```r
+globalData2019clean %&gt;%
+  group_by(COUNTRY_SATIS, SEX) %&gt;%
+  count() %&gt;%
+  group_by(COUNTRY_SATIS) %&gt;%
+  mutate(perc = 100 * (n / sum(n))) %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+  ggplot(aes(x = COUNTRY_SATIS, y = perc, fill = SEX)) +
+* geom_col(position = "dodge")
+```
+]
+ 
+.panel2-grouped_bar_perc-auto[
+![](viz_files/figure-html/grouped_bar_perc_auto_08_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar_perc-auto[
+
+```r
+globalData2019clean %&gt;%
+  group_by(COUNTRY_SATIS, SEX) %&gt;%
+  count() %&gt;%
+  group_by(COUNTRY_SATIS) %&gt;%
+  mutate(perc = 100 * (n / sum(n))) %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+  ggplot(aes(x = COUNTRY_SATIS, y = perc, fill = SEX)) +
+  geom_col(position = "dodge") +
+* labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
+*      y = "Percentage within satisfaction group",
+*      title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
+*      fill = "Participant sex")
+```
+]
+ 
+.panel2-grouped_bar_perc-auto[
+![](viz_files/figure-html/grouped_bar_perc_auto_09_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar_perc-auto[
+
+```r
+globalData2019clean %&gt;%
+  group_by(COUNTRY_SATIS, SEX) %&gt;%
+  count() %&gt;%
+  group_by(COUNTRY_SATIS) %&gt;%
+  mutate(perc = 100 * (n / sum(n))) %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+  ggplot(aes(x = COUNTRY_SATIS, y = perc, fill = SEX)) +
+  geom_col(position = "dodge") +
+  labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
+       y = "Percentage within satisfaction group",
+       title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
+       fill = "Participant sex") +
+* scale_fill_brewer(palette = "Paired")
+```
+]
+ 
+.panel2-grouped_bar_perc-auto[
+![](viz_files/figure-html/grouped_bar_perc_auto_10_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar_perc-auto[
+
+```r
+globalData2019clean %&gt;%
+  group_by(COUNTRY_SATIS, SEX) %&gt;%
+  count() %&gt;%
+  group_by(COUNTRY_SATIS) %&gt;%
+  mutate(perc = 100 * (n / sum(n))) %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+  ggplot(aes(x = COUNTRY_SATIS, y = perc, fill = SEX)) +
+  geom_col(position = "dodge") +
+  labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
+       y = "Percentage within satisfaction group",
+       title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
+       fill = "Participant sex") +
+  scale_fill_brewer(palette = "Paired") +
+* theme_minimal()
+```
+]
+ 
+.panel2-grouped_bar_perc-auto[
+![](viz_files/figure-html/grouped_bar_perc_auto_11_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped bar plot
+.panel1-grouped_bar_perc-auto[
+
+```r
+globalData2019clean %&gt;%
+  group_by(COUNTRY_SATIS, SEX) %&gt;%
+  count() %&gt;%
+  group_by(COUNTRY_SATIS) %&gt;%
+  mutate(perc = 100 * (n / sum(n))) %&gt;%
+  drop_na(COUNTRY_SATIS) %&gt;%
+  ggplot(aes(x = COUNTRY_SATIS, y = perc, fill = SEX)) +
+  geom_col(position = "dodge") +
+  labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
+       y = "Percentage within satisfaction group",
+       title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
+       fill = "Participant sex") +
+  scale_fill_brewer(palette = "Paired") +
+  theme_minimal() +
+* scale_x_discrete(labels =
+*                    function(x)
+*                      str_wrap(x, width = 30))
+```
+]
+ 
+.panel2-grouped_bar_perc-auto[
+![](viz_files/figure-html/grouped_bar_perc_auto_12_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-grouped_bar_perc-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-grouped_bar_perc-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-grouped_bar_perc-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+count: false
+ 
+## Histogram
+.panel1-histogram-auto[
+
+```r
+# Histogram for age
+*globalData2019clean
+```
+]
+ 
+.panel2-histogram-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Histogram
+.panel1-histogram-auto[
+
+```r
+# Histogram for age
+globalData2019clean %&gt;%
+* ggplot(aes(x = AGE))
+```
+]
+ 
+.panel2-histogram-auto[
+![](viz_files/figure-html/histogram_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Histogram
+.panel1-histogram-auto[
+
+```r
+# Histogram for age
+globalData2019clean %&gt;%
+  ggplot(aes(x = AGE)) +
+* geom_histogram()
+```
+]
+ 
+.panel2-histogram-auto[
+![](viz_files/figure-html/histogram_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-histogram-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-histogram-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-histogram-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+count: false
+ 
+## Fancy histogram
+.panel1-fancyhistogram-auto[
+
+```r
+# Histogram for age
+*globalData2019clean
+```
+]
+ 
+.panel2-fancyhistogram-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Fancy histogram
+.panel1-fancyhistogram-auto[
+
+```r
+# Histogram for age
+globalData2019clean %&gt;%
+* ggplot(aes(x = AGE, fill = SEX))
+```
+]
+ 
+.panel2-fancyhistogram-auto[
+![](viz_files/figure-html/fancyhistogram_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy histogram
+.panel1-fancyhistogram-auto[
+
+```r
+# Histogram for age
+globalData2019clean %&gt;%
+  ggplot(aes(x = AGE, fill = SEX)) +
+* geom_histogram(color = "white")
+```
+]
+ 
+.panel2-fancyhistogram-auto[
+![](viz_files/figure-html/fancyhistogram_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy histogram
+.panel1-fancyhistogram-auto[
+
+```r
+# Histogram for age
+globalData2019clean %&gt;%
+  ggplot(aes(x = AGE, fill = SEX)) +
+  geom_histogram(color = "white") +
+* labs(x = "Participant age (years)",
+*      y = "Frequency",
+*      title = "Age distribution by sex for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.")
+```
+]
+ 
+.panel2-fancyhistogram-auto[
+![](viz_files/figure-html/fancyhistogram_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy histogram
+.panel1-fancyhistogram-auto[
+
+```r
+# Histogram for age
+globalData2019clean %&gt;%
+  ggplot(aes(x = AGE, fill = SEX)) +
+  geom_histogram(color = "white") +
+  labs(x = "Participant age (years)",
+       y = "Frequency",
+       title = "Age distribution by sex for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.") +
+* scale_fill_brewer(palette = "Set1")
+```
+]
+ 
+.panel2-fancyhistogram-auto[
+![](viz_files/figure-html/fancyhistogram_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy histogram
+.panel1-fancyhistogram-auto[
+
+```r
+# Histogram for age
+globalData2019clean %&gt;%
+  ggplot(aes(x = AGE, fill = SEX)) +
+  geom_histogram(color = "white") +
+  labs(x = "Participant age (years)",
+       y = "Frequency",
+       title = "Age distribution by sex for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.") +
+  scale_fill_brewer(palette = "Set1") +
+* facet_grid(rows = vars(SEX))
+```
+]
+ 
+.panel2-fancyhistogram-auto[
+![](viz_files/figure-html/fancyhistogram_auto_06_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy histogram
+.panel1-fancyhistogram-auto[
+
+```r
+# Histogram for age
+globalData2019clean %&gt;%
+  ggplot(aes(x = AGE, fill = SEX)) +
+  geom_histogram(color = "white") +
+  labs(x = "Participant age (years)",
+       y = "Frequency",
+       title = "Age distribution by sex for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.") +
+  scale_fill_brewer(palette = "Set1") +
+  facet_grid(rows = vars(SEX)) +
+* theme_minimal()
+```
+]
+ 
+.panel2-fancyhistogram-auto[
+![](viz_files/figure-html/fancyhistogram_auto_07_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancy histogram
+.panel1-fancyhistogram-auto[
+
+```r
+# Histogram for age
+globalData2019clean %&gt;%
+  ggplot(aes(x = AGE, fill = SEX)) +
+  geom_histogram(color = "white") +
+  labs(x = "Participant age (years)",
+       y = "Frequency",
+       title = "Age distribution by sex for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.") +
+  scale_fill_brewer(palette = "Set1") +
+  facet_grid(rows = vars(SEX)) +
+  theme_minimal() +
+* theme(legend.position = "none")
+```
+]
+ 
+.panel2-fancyhistogram-auto[
+![](viz_files/figure-html/fancyhistogram_auto_08_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-fancyhistogram-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-fancyhistogram-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-fancyhistogram-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+count: false
+ 
+## Box plot
+.panel1-boxplot-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-boxplot-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Box plot
+.panel1-boxplot-auto[
+
+```r
+globalData2019clean %&gt;%
+* ggplot(aes(x = SEX, y = AGE))
+```
+]
+ 
+.panel2-boxplot-auto[
+![](viz_files/figure-html/boxplot_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Box plot
+.panel1-boxplot-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE)) +
+* geom_boxplot()
+```
+]
+ 
+.panel2-boxplot-auto[
+![](viz_files/figure-html/boxplot_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Box plot
+.panel1-boxplot-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE)) +
+  geom_boxplot() +
+* labs(x = "Participant sex",
+*      y = "Age",
+*      title = "Age by sex for 5001 participants in a 2019 survey of people\nfrom Kenya, Nigeria, South Africa, and the United States.")
+```
+]
+ 
+.panel2-boxplot-auto[
+![](viz_files/figure-html/boxplot_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Box plot
+.panel1-boxplot-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE)) +
+  geom_boxplot() +
+  labs(x = "Participant sex",
+       y = "Age",
+       title = "Age by sex for 5001 participants in a 2019 survey of people\nfrom Kenya, Nigeria, South Africa, and the United States.") +
+* theme_minimal()
+```
+]
+ 
+.panel2-boxplot-auto[
+![](viz_files/figure-html/boxplot_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-boxplot-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-boxplot-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-boxplot-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-fancybox-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox-auto[
+
+```r
+globalData2019clean %&gt;%
+* ggplot(aes(x = SEX, y = AGE, color = SEX))
+```
+]
+ 
+.panel2-fancybox-auto[
+![](viz_files/figure-html/fancybox_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
+* geom_violin()
+```
+]
+ 
+.panel2-fancybox-auto[
+![](viz_files/figure-html/fancybox_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
+  geom_violin() +
+* geom_boxplot()
+```
+]
+ 
+.panel2-fancybox-auto[
+![](viz_files/figure-html/fancybox_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
+  geom_violin() +
+  geom_boxplot() +
+* geom_jitter()
+```
+]
+ 
+.panel2-fancybox-auto[
+![](viz_files/figure-html/fancybox_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
+  geom_violin() +
+  geom_boxplot() +
+  geom_jitter() +
+* labs(x = "Participant sex",
+*      y = "Age",
+*      title = "Age by sex for 5001 participants in a 2019 survey of people\nfrom Kenya, Nigeria, South Africa, and the United States.")
+```
+]
+ 
+.panel2-fancybox-auto[
+![](viz_files/figure-html/fancybox_auto_06_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
+  geom_violin() +
+  geom_boxplot() +
+  geom_jitter() +
+  labs(x = "Participant sex",
+       y = "Age",
+       title = "Age by sex for 5001 participants in a 2019 survey of people\nfrom Kenya, Nigeria, South Africa, and the United States.") +
+* theme_minimal()
+```
+]
+ 
+.panel2-fancybox-auto[
+![](viz_files/figure-html/fancybox_auto_07_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
+  geom_violin() +
+  geom_boxplot() +
+  geom_jitter() +
+  labs(x = "Participant sex",
+       y = "Age",
+       title = "Age by sex for 5001 participants in a 2019 survey of people\nfrom Kenya, Nigeria, South Africa, and the United States.") +
+  theme_minimal() +
+* theme(legend.position = "none")
+```
+]
+ 
+.panel2-fancybox-auto[
+![](viz_files/figure-html/fancybox_auto_08_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-fancybox-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-fancybox-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-fancybox-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+---
+
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox2-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-fancybox2-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox2-auto[
+
+```r
+globalData2019clean %&gt;%
+* ggplot(aes(x = SEX, y = AGE, color = SEX))
+```
+]
+ 
+.panel2-fancybox2-auto[
+![](viz_files/figure-html/fancybox2_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox2-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
+* geom_violin()
+```
+]
+ 
+.panel2-fancybox2-auto[
+![](viz_files/figure-html/fancybox2_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox2-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
+  geom_violin() +
+* geom_boxplot(width = .4)
+```
+]
+ 
+.panel2-fancybox2-auto[
+![](viz_files/figure-html/fancybox2_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox2-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
+  geom_violin() +
+  geom_boxplot(width = .4) +
+* geom_jitter(alpha = .3)
+```
+]
+ 
+.panel2-fancybox2-auto[
+![](viz_files/figure-html/fancybox2_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox2-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
+  geom_violin() +
+  geom_boxplot(width = .4) +
+  geom_jitter(alpha = .3) +
+* labs(x = "Participant sex",
+*      y = "Age",
+*      title = "Age by sex for 5001 participants in a 2019 survey of people from\nKenya, Nigeria, South Africa, and the United States.")
+```
+]
+ 
+.panel2-fancybox2-auto[
+![](viz_files/figure-html/fancybox2_auto_06_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox2-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
+  geom_violin() +
+  geom_boxplot(width = .4) +
+  geom_jitter(alpha = .3) +
+  labs(x = "Participant sex",
+       y = "Age",
+       title = "Age by sex for 5001 participants in a 2019 survey of people from\nKenya, Nigeria, South Africa, and the United States.") +
+* scale_color_brewer(palette = "Dark2")
+```
+]
+ 
+.panel2-fancybox2-auto[
+![](viz_files/figure-html/fancybox2_auto_07_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox2-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
+  geom_violin() +
+  geom_boxplot(width = .4) +
+  geom_jitter(alpha = .3) +
+  labs(x = "Participant sex",
+       y = "Age",
+       title = "Age by sex for 5001 participants in a 2019 survey of people from\nKenya, Nigeria, South Africa, and the United States.") +
+  scale_color_brewer(palette = "Dark2") +
+* theme_minimal()
+```
+]
+ 
+.panel2-fancybox2-auto[
+![](viz_files/figure-html/fancybox2_auto_08_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox2-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
+  geom_violin() +
+  geom_boxplot(width = .4) +
+  geom_jitter(alpha = .3) +
+  labs(x = "Participant sex",
+       y = "Age",
+       title = "Age by sex for 5001 participants in a 2019 survey of people from\nKenya, Nigeria, South Africa, and the United States.") +
+  scale_color_brewer(palette = "Dark2") +
+  theme_minimal() +
+* coord_flip()
+```
+]
+ 
+.panel2-fancybox2-auto[
+![](viz_files/figure-html/fancybox2_auto_09_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox2-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
+  geom_violin() +
+  geom_boxplot(width = .4) +
+  geom_jitter(alpha = .3) +
+  labs(x = "Participant sex",
+       y = "Age",
+       title = "Age by sex for 5001 participants in a 2019 survey of people from\nKenya, Nigeria, South Africa, and the United States.") +
+  scale_color_brewer(palette = "Dark2") +
+  theme_minimal() +
+  coord_flip() +
+* theme(legend.position = "none")
+```
+]
+ 
+.panel2-fancybox2-auto[
+![](viz_files/figure-html/fancybox2_auto_10_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Fancier box plot
+.panel1-fancybox2-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
+  geom_violin() +
+  geom_boxplot(width = .4) +
+  geom_jitter(alpha = .3) +
+  labs(x = "Participant sex",
+       y = "Age",
+       title = "Age by sex for 5001 participants in a 2019 survey of people from\nKenya, Nigeria, South Africa, and the United States.") +
+  scale_color_brewer(palette = "Dark2") +
+  theme_minimal() +
+  coord_flip() +
+  theme(legend.position = "none")
+```
+]
+ 
+.panel2-fancybox2-auto[
+![](viz_files/figure-html/fancybox2_auto_11_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-fancybox2-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-fancybox2-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-fancybox2-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+count: false
+ 
+## Grouped box plot
+.panel1-groupboxplot-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-groupboxplot-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Grouped box plot
+.panel1-groupboxplot-auto[
+
+```r
+globalData2019clean %&gt;%
+* ggplot(aes(y = LADDER_NOW, x = country, color = SEX))
+```
+]
+ 
+.panel2-groupboxplot-auto[
+![](viz_files/figure-html/groupboxplot_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped box plot
+.panel1-groupboxplot-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, x = country, color = SEX)) +
+* geom_boxplot()
+```
+]
+ 
+.panel2-groupboxplot-auto[
+![](viz_files/figure-html/groupboxplot_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped box plot
+.panel1-groupboxplot-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, x = country, color = SEX)) +
+  geom_boxplot() +
+* labs(x = "Country",
+*      y = "Life ladder (0 = worst, 10 = best)",
+*      title = "Life ladder by sex and country for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.",
+*      color = "Sex")
+```
+]
+ 
+.panel2-groupboxplot-auto[
+![](viz_files/figure-html/groupboxplot_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped box plot
+.panel1-groupboxplot-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, x = country, color = SEX)) +
+  geom_boxplot() +
+  labs(x = "Country",
+       y = "Life ladder (0 = worst, 10 = best)",
+       title = "Life ladder by sex and country for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.",
+       color = "Sex") +
+* theme_minimal()
+```
+]
+ 
+.panel2-groupboxplot-auto[
+![](viz_files/figure-html/groupboxplot_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-groupboxplot-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-groupboxplot-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-groupboxplot-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+## The final challenges...choose one or try them all!
+
+* Make a bar graph showing percentage of participants in each category of ECON_SIT 
+
+* Create a figure that shows grouped bar plots for GLOBAL_COMMUNITY grouped by country
+
+* Create a figure that shows grouped bar plots for country and COUNTRY_SATIS
+
+* Create a figure that shows grouped bar plots for COUNTRY_SATIS grouped by country and SEX
+
+* Create a figure that shows the distribution of AGE by country and SEX
+
+---
+
+## The end
+
+* Email me at [harrisj@wustl.edu](mailto:harrisj@wustl.edu)
+
+* Connect with me on Twitter [@jenineharris](https://twitter.com/jenineharris)
+
+&lt;br&gt;&lt;BR&gt;
+&lt;img src="graphics/logo-ichad.png" width="600" style="display: block; margin: auto;" /&gt;
+
+
+&lt;!-- adjust font size in this css code chunk, currently 80 --&gt;
+
+&lt;style type="text/css"&gt;
+.remark-code{line-height: 1.5; font-size: 90%}
+
+@media print {
+  .has-continuation {
+    display: block;
+  }
+}
+
+code.r.hljs.remark-code{
+  position: relative;
+  overflow-x: hidden;
+}
+
+
+code.r.hljs.remark-code:hover{
+  overflow-x:visible;
+  width: 500px;
+  border-style: solid;
+}
+&lt;/style&gt;
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
