@@ -2029,6 +2029,7 @@ globalData2019clean &lt;- globalData2019 %&gt;%
          ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;% 
   zap_labels() %&gt;%
   mutate(AGE = na_if(AGE, 98)) %&gt;% 
+  mutate(AGE = na_if(AGE, 99)) %&gt;%
   mutate(country = recode_factor(country,
                              '16' = 'Kenya',
                              '21' = 'Nigeria',
@@ -2108,15 +2109,15 @@ table1(~ SEX + AGE + BETTER_GENDER,
 </tr>
 <tr>
 <td class='rowlabel'>Mean (SD)</td>
-<td>39.9 (18.0)</td>
+<td>39.4 (17.2)</td>
 </tr>
 <tr>
 <td class='rowlabel'>Median [Min, Max]</td>
-<td>35.0 [18.0, 99.0]</td>
+<td>35.0 [18.0, 97.0]</td>
 </tr>
 <tr>
 <td class='rowlabel lastrow'>Missing</td>
-<td class='lastrow'>75 (1.5%)</td>
+<td class='lastrow'>116 (2.3%)</td>
 </tr>
 <tr>
 <td class='rowlabel firstrow'><span class='varlabel'>BETTER_GENDER</span></td>
@@ -2201,15 +2202,15 @@ table1(~ SEX + AGE + BETTER_GENDER + BELIEVE_GOD,
 </tr>
 <tr>
 <td class='rowlabel'>Mean (SD)</td>
-<td>39.9 (18.0)</td>
+<td>39.4 (17.2)</td>
 </tr>
 <tr>
 <td class='rowlabel'>Median [Min, Max]</td>
-<td>35.0 [18.0, 99.0]</td>
+<td>35.0 [18.0, 97.0]</td>
 </tr>
 <tr>
 <td class='rowlabel lastrow'>Missing</td>
-<td class='lastrow'>75 (1.5%)</td>
+<td class='lastrow'>116 (2.3%)</td>
 </tr>
 <tr>
 <td class='rowlabel firstrow'><span class='varlabel'>Who has a better life in this country</span></td>
@@ -2280,21 +2281,21 @@ table1(~ AGE + BETTER_GENDER + BELIEVE_GOD | SEX,
 </tr>
 <tr>
 <td class='rowlabel'>Mean (SD)</td>
-<td>40.1 (17.7)</td>
-<td>39.7 (18.3)</td>
-<td>39.9 (18.0)</td>
+<td>39.8 (17.2)</td>
+<td>39.0 (17.2)</td>
+<td>39.4 (17.2)</td>
 </tr>
 <tr>
 <td class='rowlabel'>Median [Min, Max]</td>
-<td>36.0 [18.0, 99.0]</td>
-<td>35.0 [18.0, 99.0]</td>
-<td>35.0 [18.0, 99.0]</td>
+<td>36.0 [18.0, 97.0]</td>
+<td>35.0 [18.0, 97.0]</td>
+<td>35.0 [18.0, 97.0]</td>
 </tr>
 <tr>
 <td class='rowlabel lastrow'>Missing</td>
-<td class='lastrow'>26 (1.0%)</td>
-<td class='lastrow'>49 (2.0%)</td>
-<td class='lastrow'>75 (1.5%)</td>
+<td class='lastrow'>40 (1.5%)</td>
+<td class='lastrow'>76 (3.2%)</td>
+<td class='lastrow'>116 (2.3%)</td>
 </tr>
 <tr>
 <td class='rowlabel firstrow'><span class='varlabel'>Who has a better life in this country</span></td>
@@ -2383,21 +2384,21 @@ table1(~ AGE + BETTER_GENDER + BELIEVE_GOD | SEX,
 </tr>
 <tr>
 <td class='rowlabel'>Mean (SD)</td>
-<td>40.1 (17.7)</td>
-<td>39.7 (18.3)</td>
-<td>39.9 (18.0)</td>
+<td>39.8 (17.2)</td>
+<td>39.0 (17.2)</td>
+<td>39.4 (17.2)</td>
 </tr>
 <tr>
 <td class='rowlabel'>Median [Min, Max]</td>
-<td>36.0 [18.0, 99.0]</td>
-<td>35.0 [18.0, 99.0]</td>
-<td>35.0 [18.0, 99.0]</td>
+<td>36.0 [18.0, 97.0]</td>
+<td>35.0 [18.0, 97.0]</td>
+<td>35.0 [18.0, 97.0]</td>
 </tr>
 <tr>
 <td class='rowlabel lastrow'>Missing</td>
-<td class='lastrow'>26 (1.0%)</td>
-<td class='lastrow'>49 (2.0%)</td>
-<td class='lastrow'>75 (1.5%)</td>
+<td class='lastrow'>40 (1.5%)</td>
+<td class='lastrow'>76 (3.2%)</td>
+<td class='lastrow'>116 (2.3%)</td>
 </tr>
 <tr>
 <td class='rowlabel firstrow'><span class='varlabel'>Who has a better life in this country</span></td>
@@ -2509,21 +2510,21 @@ table1(~ AGE + BETTER_GENDER + BELIEVE_GOD + COUNTRY_SATIS + ECON_SIT | SEX,
 </tr>
 <tr>
 <td class='rowlabel'>Mean (SD)</td>
-<td>40.1 (17.7)</td>
-<td>39.7 (18.3)</td>
-<td>39.9 (18.0)</td>
+<td>39.8 (17.2)</td>
+<td>39.0 (17.2)</td>
+<td>39.4 (17.2)</td>
 </tr>
 <tr>
 <td class='rowlabel'>Median [Min, Max]</td>
-<td>36.0 [18.0, 99.0]</td>
-<td>35.0 [18.0, 99.0]</td>
-<td>35.0 [18.0, 99.0]</td>
+<td>36.0 [18.0, 97.0]</td>
+<td>35.0 [18.0, 97.0]</td>
+<td>35.0 [18.0, 97.0]</td>
 </tr>
 <tr>
 <td class='rowlabel lastrow'>Missing</td>
-<td class='lastrow'>26 (1.0%)</td>
-<td class='lastrow'>49 (2.0%)</td>
-<td class='lastrow'>75 (1.5%)</td>
+<td class='lastrow'>40 (1.5%)</td>
+<td class='lastrow'>76 (3.2%)</td>
+<td class='lastrow'>116 (2.3%)</td>
 </tr>
 <tr>
 <td class='rowlabel firstrow'><span class='varlabel'>Who has a better life in this country</span></td>
