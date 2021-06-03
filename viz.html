@@ -1511,7 +1511,7 @@ globalData2019clean %&gt;%
   labs(x = "Sex",
        y = "Frequency",
        title = "Sex of 5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
-* scale_fill_brewer(palette = "Set2")
+* scale_fill_brewer(palette = "Set1")
 ```
 ]
  
@@ -1532,7 +1532,7 @@ globalData2019clean %&gt;%
   labs(x = "Sex",
        y = "Frequency",
        title = "Sex of 5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
-  scale_fill_brewer(palette = "Set2") +
+  scale_fill_brewer(palette = "Set1") +
 * theme_minimal()
 ```
 ]
@@ -1670,7 +1670,7 @@ globalData2019clean %&gt;%
   labs(x = "Sex",
        y = "Frequency",
        title = "Sex of 5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
-* scale_fill_brewer(palette = "Set2")
+* scale_fill_brewer(palette = "Set1")
 ```
 ]
  
@@ -1691,7 +1691,7 @@ globalData2019clean %&gt;%
   labs(x = "Sex",
        y = "Frequency",
        title = "Sex of 5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
-  scale_fill_brewer(palette = "Set2") +
+  scale_fill_brewer(palette = "Set1") +
 * theme_minimal()
 ```
 ]
@@ -1713,7 +1713,7 @@ globalData2019clean %&gt;%
   labs(x = "Sex",
        y = "Frequency",
        title = "Sex of 5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
-  scale_fill_brewer(palette = "Set2") +
+  scale_fill_brewer(palette = "Set1") +
   theme_minimal() +
 * theme(legend.position = "none")
 ```
@@ -1870,7 +1870,7 @@ globalData2019clean %&gt;%
   labs(x = "Who has better life",
        y = "Frequency",
        title = "Opinion on quality of life by gender for\n5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
-* scale_fill_brewer(palette = "Set2")
+* scale_fill_brewer(palette = "Set1")
 ```
 ]
  
@@ -1891,7 +1891,7 @@ globalData2019clean %&gt;%
   labs(x = "Who has better life",
        y = "Frequency",
        title = "Opinion on quality of life by gender for\n5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
-  scale_fill_brewer(palette = "Set2") +
+  scale_fill_brewer(palette = "Set1") +
 * theme_bw()
 ```
 ]
@@ -1913,7 +1913,7 @@ globalData2019clean %&gt;%
   labs(x = "Who has better life",
        y = "Frequency",
        title = "Opinion on quality of life by gender for\n5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
-  scale_fill_brewer(palette = "Set2") +
+  scale_fill_brewer(palette = "Set1") +
   theme_bw() +
 * theme(legend.position = "none")
 ```
@@ -1958,169 +1958,51 @@ globalData2019clean %&gt;%
 
 count: false
  
-## Stacked bar plot
-.panel1-stacked_bar-auto[
-
-```r
-*globalData2019clean
-```
-]
- 
-.panel2-stacked_bar-auto[
-
-```
-# A tibble: 5,001 x 7
-   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
-   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
- 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
- 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
- 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
- 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
- 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
- 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
- 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
- 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
- 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
-10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
-# … with 4,991 more rows
-```
-]
-
----
-count: false
- 
-## Stacked bar plot
-.panel1-stacked_bar-auto[
+## You try it example
+.panel1-you-try2-rotate[
 
 ```r
 globalData2019clean %&gt;%
-* drop_na(BETTER_GENDER)
-```
-]
- 
-.panel2-stacked_bar-auto[
-
-```
-# A tibble: 4,777 x 7
-   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
-   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
- 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
- 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
- 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
- 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
- 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
- 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
- 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
- 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
- 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
-10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
-# … with 4,767 more rows
-```
-]
-
----
-count: false
- 
-## Stacked bar plot
-.panel1-stacked_bar-auto[
-
-```r
-globalData2019clean %&gt;%
-  drop_na(BETTER_GENDER) %&gt;%
-* ggplot(aes(x = BETTER_GENDER, fill = SEX))
-```
-]
- 
-.panel2-stacked_bar-auto[
-![](viz_files/figure-html/stacked_bar_auto_03_output-1.png)&lt;!-- --&gt;
-]
-
----
-count: false
- 
-## Stacked bar plot
-.panel1-stacked_bar-auto[
-
-```r
-globalData2019clean %&gt;%
-  drop_na(BETTER_GENDER) %&gt;%
-  ggplot(aes(x = BETTER_GENDER, fill = SEX)) +
-* geom_bar()
-```
-]
- 
-.panel2-stacked_bar-auto[
-![](viz_files/figure-html/stacked_bar_auto_04_output-1.png)&lt;!-- --&gt;
-]
-
----
-count: false
- 
-## Stacked bar plot
-.panel1-stacked_bar-auto[
-
-```r
-globalData2019clean %&gt;%
-  drop_na(BETTER_GENDER) %&gt;%
-  ggplot(aes(x = BETTER_GENDER, fill = SEX)) +
-  geom_bar() +
-* labs(x = "Who has better life",
-*      y = "Frequency",
-*      title = "Who has a better life by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.")
-```
-]
- 
-.panel2-stacked_bar-auto[
-![](viz_files/figure-html/stacked_bar_auto_05_output-1.png)&lt;!-- --&gt;
-]
-
----
-count: false
- 
-## Stacked bar plot
-.panel1-stacked_bar-auto[
-
-```r
-globalData2019clean %&gt;%
-  drop_na(BETTER_GENDER) %&gt;%
-  ggplot(aes(x = BETTER_GENDER, fill = SEX)) +
+  ggplot(aes(x = BETTER_GENDER, fill = BETTER_GENDER)) +
   geom_bar() +
   labs(x = "Who has better life",
        y = "Frequency",
-       title = "Who has a better life by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.") +
-* scale_fill_brewer(palette = "Paired")
+       title = "Opinion on quality of life by gender for\n5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
+* scale_fill_brewer(palette = "Set1") +
+  theme_bw() +
+  theme(legend.position = "none")
 ```
 ]
  
-.panel2-stacked_bar-auto[
-![](viz_files/figure-html/stacked_bar_auto_06_output-1.png)&lt;!-- --&gt;
+.panel2-you-try2-rotate[
+![](viz_files/figure-html/you-try2_rotate_01_output-1.png)&lt;!-- --&gt;
 ]
 
 ---
 count: false
  
-## Stacked bar plot
-.panel1-stacked_bar-auto[
+## You try it example
+.panel1-you-try2-rotate[
 
 ```r
 globalData2019clean %&gt;%
-  drop_na(BETTER_GENDER) %&gt;%
-  ggplot(aes(x = BETTER_GENDER, fill = SEX)) +
+  ggplot(aes(x = BETTER_GENDER, fill = BETTER_GENDER)) +
   geom_bar() +
   labs(x = "Who has better life",
        y = "Frequency",
-       title = "Who has a better life by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.") +
-  scale_fill_brewer(palette = "Paired") +
-* theme_minimal()
+       title = "Opinion on quality of life by gender for\n5001 participants in a 2019 survey of people from Kenya,\nNigeria, South Africa, and the United States.") +
+* scale_fill_brewer(palette = "Set1", na.value = "orange") +
+  theme_bw() +
+  theme(legend.position = "none")
 ```
 ]
  
-.panel2-stacked_bar-auto[
-![](viz_files/figure-html/stacked_bar_auto_07_output-1.png)&lt;!-- --&gt;
+.panel2-you-try2-rotate[
+![](viz_files/figure-html/you-try2_rotate_02_output-1.png)&lt;!-- --&gt;
 ]
 
 &lt;style&gt;
-.panel1-stacked_bar-auto {
+.panel1-you-try2-rotate {
   color: black;
   width: 49%;
   hight: 32%;
@@ -2128,7 +2010,7 @@ globalData2019clean %&gt;%
   padding-left: 1%;
   font-size: 80%
 }
-.panel2-stacked_bar-auto {
+.panel2-you-try2-rotate {
   color: black;
   width: 49%;
   hight: 32%;
@@ -2136,7 +2018,7 @@ globalData2019clean %&gt;%
   padding-left: 1%;
   font-size: 80%
 }
-.panel3-stacked_bar-auto {
+.panel3-you-try2-rotate {
   color: black;
   width: NA%;
   hight: 33%;
@@ -2596,239 +2478,6 @@ globalData2019clean %&gt;%
 }
 &lt;/style&gt;
 
-
-
-
-
----
-
-count: false
- 
-## Shorten long labels
-.panel1-longlabs-auto[
-
-```r
-# Figure 2 code goes here
-*globalData2019clean
-```
-]
- 
-.panel2-longlabs-auto[
-
-```
-# A tibble: 5,001 x 7
-   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
-   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
- 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
- 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
- 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
- 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
- 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
- 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
- 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
- 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
- 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
-10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
-# … with 4,991 more rows
-```
-]
-
----
-count: false
- 
-## Shorten long labels
-.panel1-longlabs-auto[
-
-```r
-# Figure 2 code goes here
-globalData2019clean %&gt;%
-* drop_na(COUNTRY_SATIS)
-```
-]
- 
-.panel2-longlabs-auto[
-
-```
-# A tibble: 4,901 x 7
-   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
-   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
- 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
- 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
- 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
- 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
- 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
- 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
- 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
- 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
- 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
-10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
-# … with 4,891 more rows
-```
-]
-
----
-count: false
- 
-## Shorten long labels
-.panel1-longlabs-auto[
-
-```r
-# Figure 2 code goes here
-globalData2019clean %&gt;%
-  drop_na(COUNTRY_SATIS) %&gt;%
-* ggplot(aes(x = COUNTRY_SATIS, fill = SEX))
-```
-]
- 
-.panel2-longlabs-auto[
-![](viz_files/figure-html/longlabs_auto_03_output-1.png)&lt;!-- --&gt;
-]
-
----
-count: false
- 
-## Shorten long labels
-.panel1-longlabs-auto[
-
-```r
-# Figure 2 code goes here
-globalData2019clean %&gt;%
-  drop_na(COUNTRY_SATIS) %&gt;%
-  ggplot(aes(x = COUNTRY_SATIS, fill = SEX)) +
-* geom_bar(position = "dodge")
-```
-]
- 
-.panel2-longlabs-auto[
-![](viz_files/figure-html/longlabs_auto_04_output-1.png)&lt;!-- --&gt;
-]
-
----
-count: false
- 
-## Shorten long labels
-.panel1-longlabs-auto[
-
-```r
-# Figure 2 code goes here
-globalData2019clean %&gt;%
-  drop_na(COUNTRY_SATIS) %&gt;%
-  ggplot(aes(x = COUNTRY_SATIS, fill = SEX)) +
-  geom_bar(position = "dodge") +
-* labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
-*      y = "Frequency",
-*      title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
-*      fill = "Participant sex")
-```
-]
- 
-.panel2-longlabs-auto[
-![](viz_files/figure-html/longlabs_auto_05_output-1.png)&lt;!-- --&gt;
-]
-
----
-count: false
- 
-## Shorten long labels
-.panel1-longlabs-auto[
-
-```r
-# Figure 2 code goes here
-globalData2019clean %&gt;%
-  drop_na(COUNTRY_SATIS) %&gt;%
-  ggplot(aes(x = COUNTRY_SATIS, fill = SEX)) +
-  geom_bar(position = "dodge") +
-  labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
-       y = "Frequency",
-       title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
-       fill = "Participant sex") +
-* scale_fill_brewer(palette = "Paired")
-```
-]
- 
-.panel2-longlabs-auto[
-![](viz_files/figure-html/longlabs_auto_06_output-1.png)&lt;!-- --&gt;
-]
-
----
-count: false
- 
-## Shorten long labels
-.panel1-longlabs-auto[
-
-```r
-# Figure 2 code goes here
-globalData2019clean %&gt;%
-  drop_na(COUNTRY_SATIS) %&gt;%
-  ggplot(aes(x = COUNTRY_SATIS, fill = SEX)) +
-  geom_bar(position = "dodge") +
-  labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
-       y = "Frequency",
-       title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
-       fill = "Participant sex") +
-  scale_fill_brewer(palette = "Paired") +
-* theme_minimal()
-```
-]
- 
-.panel2-longlabs-auto[
-![](viz_files/figure-html/longlabs_auto_07_output-1.png)&lt;!-- --&gt;
-]
-
----
-count: false
- 
-## Shorten long labels
-.panel1-longlabs-auto[
-
-```r
-# Figure 2 code goes here
-globalData2019clean %&gt;%
-  drop_na(COUNTRY_SATIS) %&gt;%
-  ggplot(aes(x = COUNTRY_SATIS, fill = SEX)) +
-  geom_bar(position = "dodge") +
-  labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
-       y = "Frequency",
-       title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
-       fill = "Participant sex") +
-  scale_fill_brewer(palette = "Paired") +
-  theme_minimal() +
-* scale_x_discrete(labels =
-*                    function(x)
-*                      str_wrap(x, width = 30))
-```
-]
- 
-.panel2-longlabs-auto[
-![](viz_files/figure-html/longlabs_auto_08_output-1.png)&lt;!-- --&gt;
-]
-
-&lt;style&gt;
-.panel1-longlabs-auto {
-  color: black;
-  width: 49%;
-  hight: 32%;
-  float: left;
-  padding-left: 1%;
-  font-size: 80%
-}
-.panel2-longlabs-auto {
-  color: black;
-  width: 49%;
-  hight: 32%;
-  float: left;
-  padding-left: 1%;
-  font-size: 80%
-}
-.panel3-longlabs-auto {
-  color: black;
-  width: NA%;
-  hight: 33%;
-  float: left;
-  padding-left: 1%;
-  font-size: 80%
-}
-&lt;/style&gt;
 
 
 
@@ -3331,37 +2980,6 @@ globalData2019clean %&gt;%
  
 .panel2-grouped_bar_perc-auto[
 ![](viz_files/figure-html/grouped_bar_perc_auto_11_output-1.png)&lt;!-- --&gt;
-]
-
----
-count: false
- 
-## Grouped bar plot
-.panel1-grouped_bar_perc-auto[
-
-```r
-globalData2019clean %&gt;%
-  group_by(COUNTRY_SATIS, SEX) %&gt;%
-  count() %&gt;%
-  group_by(COUNTRY_SATIS) %&gt;%
-  mutate(perc = 100 * (n / sum(n))) %&gt;%
-  drop_na(COUNTRY_SATIS) %&gt;%
-  ggplot(aes(x = COUNTRY_SATIS, y = perc, fill = SEX)) +
-  geom_col(position = "dodge") +
-  labs(x = "Satisfied or dissatisfied with the way things\nare going in our country ",
-       y = "Percentage within satisfaction group",
-       title = "Country satisfaction by sex according to 5001 participants\nin a 2019 survey of people from Kenya, Nigeria, South Africa,\nand the United States.",
-       fill = "Participant sex") +
-  scale_fill_brewer(palette = "Paired") +
-  theme_minimal() +
-* scale_x_discrete(labels =
-*                    function(x)
-*                      str_wrap(x, width = 30))
-```
-]
- 
-.panel2-grouped_bar_perc-auto[
-![](viz_files/figure-html/grouped_bar_perc_auto_12_output-1.png)&lt;!-- --&gt;
 ]
 
 &lt;style&gt;
@@ -3902,7 +3520,7 @@ count: false
 ```r
 globalData2019clean %&gt;%
   ggplot(aes(x = SEX, y = AGE, color = SEX)) +
-* geom_violin()
+* geom_half_boxplot()
 ```
 ]
  
@@ -3919,8 +3537,8 @@ count: false
 ```r
 globalData2019clean %&gt;%
   ggplot(aes(x = SEX, y = AGE, color = SEX)) +
-  geom_violin() +
-* geom_boxplot()
+  geom_half_boxplot() +
+* geom_half_point(alpha = .4)
 ```
 ]
  
@@ -3937,9 +3555,11 @@ count: false
 ```r
 globalData2019clean %&gt;%
   ggplot(aes(x = SEX, y = AGE, color = SEX)) +
-  geom_violin() +
-  geom_boxplot() +
-* geom_jitter()
+  geom_half_boxplot() +
+  geom_half_point(alpha = .4) +
+* labs(x = "Participant sex",
+*      y = "Age",
+*      title = "Age by sex for 5001 participants in a 2019 survey of people\nfrom Kenya, Nigeria, South Africa, and the United States.")
 ```
 ]
  
@@ -3956,12 +3576,12 @@ count: false
 ```r
 globalData2019clean %&gt;%
   ggplot(aes(x = SEX, y = AGE, color = SEX)) +
-  geom_violin() +
-  geom_boxplot() +
-  geom_jitter() +
-* labs(x = "Participant sex",
-*      y = "Age",
-*      title = "Age by sex for 5001 participants in a 2019 survey of people\nfrom Kenya, Nigeria, South Africa, and the United States.")
+  geom_half_boxplot() +
+  geom_half_point(alpha = .4) +
+  labs(x = "Participant sex",
+       y = "Age",
+       title = "Age by sex for 5001 participants in a 2019 survey of people\nfrom Kenya, Nigeria, South Africa, and the United States.") +
+* theme_minimal()
 ```
 ]
  
@@ -3978,32 +3598,8 @@ count: false
 ```r
 globalData2019clean %&gt;%
   ggplot(aes(x = SEX, y = AGE, color = SEX)) +
-  geom_violin() +
-  geom_boxplot() +
-  geom_jitter() +
-  labs(x = "Participant sex",
-       y = "Age",
-       title = "Age by sex for 5001 participants in a 2019 survey of people\nfrom Kenya, Nigeria, South Africa, and the United States.") +
-* theme_minimal()
-```
-]
- 
-.panel2-fancybox-auto[
-![](viz_files/figure-html/fancybox_auto_07_output-1.png)&lt;!-- --&gt;
-]
-
----
-count: false
- 
-## Fancier box plot
-.panel1-fancybox-auto[
-
-```r
-globalData2019clean %&gt;%
-  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
-  geom_violin() +
-  geom_boxplot() +
-  geom_jitter() +
+  geom_half_boxplot() +
+  geom_half_point(alpha = .4) +
   labs(x = "Participant sex",
        y = "Age",
        title = "Age by sex for 5001 participants in a 2019 survey of people\nfrom Kenya, Nigeria, South Africa, and the United States.") +
@@ -4013,7 +3609,7 @@ globalData2019clean %&gt;%
 ]
  
 .panel2-fancybox-auto[
-![](viz_files/figure-html/fancybox_auto_08_output-1.png)&lt;!-- --&gt;
+![](viz_files/figure-html/fancybox_auto_07_output-1.png)&lt;!-- --&gt;
 ]
 
 &lt;style&gt;
@@ -4050,7 +3646,7 @@ globalData2019clean %&gt;%
 
 count: false
  
-## Fancier box plot
+## Rain cloud plot
 .panel1-fancybox2-auto[
 
 ```r
@@ -4081,12 +3677,12 @@ count: false
 ---
 count: false
  
-## Fancier box plot
+## Rain cloud plot
 .panel1-fancybox2-auto[
 
 ```r
 globalData2019clean %&gt;%
-* ggplot(aes(x = SEX, y = AGE, color = SEX))
+* ggplot(aes(x = SEX, y = AGE, color = SEX, fill = SEX))
 ```
 ]
  
@@ -4097,13 +3693,13 @@ globalData2019clean %&gt;%
 ---
 count: false
  
-## Fancier box plot
+## Rain cloud plot
 .panel1-fancybox2-auto[
 
 ```r
 globalData2019clean %&gt;%
-  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
-* geom_violin()
+  ggplot(aes(x = SEX, y = AGE, color = SEX, fill = SEX)) +
+* geom_half_violin(side = "r")
 ```
 ]
  
@@ -4114,14 +3710,14 @@ globalData2019clean %&gt;%
 ---
 count: false
  
-## Fancier box plot
+## Rain cloud plot
 .panel1-fancybox2-auto[
 
 ```r
 globalData2019clean %&gt;%
-  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
-  geom_violin() +
-* geom_boxplot(width = .4)
+  ggplot(aes(x = SEX, y = AGE, color = SEX, fill = SEX)) +
+  geom_half_violin(side = "r") +
+* geom_half_point(alpha = .3, side = "l")
 ```
 ]
  
@@ -4132,15 +3728,17 @@ globalData2019clean %&gt;%
 ---
 count: false
  
-## Fancier box plot
+## Rain cloud plot
 .panel1-fancybox2-auto[
 
 ```r
 globalData2019clean %&gt;%
-  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
-  geom_violin() +
-  geom_boxplot(width = .4) +
-* geom_jitter(alpha = .3)
+  ggplot(aes(x = SEX, y = AGE, color = SEX, fill = SEX)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
+* labs(x = "Participant sex",
+*      y = "Age",
+*      title = "Age by sex for 5001 participants in a 2019 survey of people from\nKenya, Nigeria, South Africa, and the United States.")
 ```
 ]
  
@@ -4151,18 +3749,18 @@ globalData2019clean %&gt;%
 ---
 count: false
  
-## Fancier box plot
+## Rain cloud plot
 .panel1-fancybox2-auto[
 
 ```r
 globalData2019clean %&gt;%
-  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
-  geom_violin() +
-  geom_boxplot(width = .4) +
-  geom_jitter(alpha = .3) +
-* labs(x = "Participant sex",
-*      y = "Age",
-*      title = "Age by sex for 5001 participants in a 2019 survey of people from\nKenya, Nigeria, South Africa, and the United States.")
+  ggplot(aes(x = SEX, y = AGE, color = SEX, fill = SEX)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
+  labs(x = "Participant sex",
+       y = "Age",
+       title = "Age by sex for 5001 participants in a 2019 survey of people from\nKenya, Nigeria, South Africa, and the United States.") +
+* scale_color_brewer(palette = "Dark2")
 ```
 ]
  
@@ -4173,19 +3771,19 @@ globalData2019clean %&gt;%
 ---
 count: false
  
-## Fancier box plot
+## Rain cloud plot
 .panel1-fancybox2-auto[
 
 ```r
 globalData2019clean %&gt;%
-  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
-  geom_violin() +
-  geom_boxplot(width = .4) +
-  geom_jitter(alpha = .3) +
+  ggplot(aes(x = SEX, y = AGE, color = SEX, fill = SEX)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
   labs(x = "Participant sex",
        y = "Age",
        title = "Age by sex for 5001 participants in a 2019 survey of people from\nKenya, Nigeria, South Africa, and the United States.") +
-* scale_color_brewer(palette = "Dark2")
+  scale_color_brewer(palette = "Dark2") +
+* scale_fill_brewer(palette = "Dark2")
 ```
 ]
  
@@ -4196,19 +3794,19 @@ globalData2019clean %&gt;%
 ---
 count: false
  
-## Fancier box plot
+## Rain cloud plot
 .panel1-fancybox2-auto[
 
 ```r
 globalData2019clean %&gt;%
-  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
-  geom_violin() +
-  geom_boxplot(width = .4) +
-  geom_jitter(alpha = .3) +
+  ggplot(aes(x = SEX, y = AGE, color = SEX, fill = SEX)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
   labs(x = "Participant sex",
        y = "Age",
        title = "Age by sex for 5001 participants in a 2019 survey of people from\nKenya, Nigeria, South Africa, and the United States.") +
   scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
 * theme_minimal()
 ```
 ]
@@ -4220,19 +3818,19 @@ globalData2019clean %&gt;%
 ---
 count: false
  
-## Fancier box plot
+## Rain cloud plot
 .panel1-fancybox2-auto[
 
 ```r
 globalData2019clean %&gt;%
-  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
-  geom_violin() +
-  geom_boxplot(width = .4) +
-  geom_jitter(alpha = .3) +
+  ggplot(aes(x = SEX, y = AGE, color = SEX, fill = SEX)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
   labs(x = "Participant sex",
        y = "Age",
        title = "Age by sex for 5001 participants in a 2019 survey of people from\nKenya, Nigeria, South Africa, and the United States.") +
   scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
   theme_minimal() +
 * coord_flip()
 ```
@@ -4245,19 +3843,19 @@ globalData2019clean %&gt;%
 ---
 count: false
  
-## Fancier box plot
+## Rain cloud plot
 .panel1-fancybox2-auto[
 
 ```r
 globalData2019clean %&gt;%
-  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
-  geom_violin() +
-  geom_boxplot(width = .4) +
-  geom_jitter(alpha = .3) +
+  ggplot(aes(x = SEX, y = AGE, color = SEX, fill = SEX)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
   labs(x = "Participant sex",
        y = "Age",
        title = "Age by sex for 5001 participants in a 2019 survey of people from\nKenya, Nigeria, South Africa, and the United States.") +
   scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
   theme_minimal() +
   coord_flip() +
 * theme(legend.position = "none")
@@ -4271,19 +3869,19 @@ globalData2019clean %&gt;%
 ---
 count: false
  
-## Fancier box plot
+## Rain cloud plot
 .panel1-fancybox2-auto[
 
 ```r
 globalData2019clean %&gt;%
-  ggplot(aes(x = SEX, y = AGE, color = SEX)) +
-  geom_violin() +
-  geom_boxplot(width = .4) +
-  geom_jitter(alpha = .3) +
+  ggplot(aes(x = SEX, y = AGE, color = SEX, fill = SEX)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
   labs(x = "Participant sex",
        y = "Age",
        title = "Age by sex for 5001 participants in a 2019 survey of people from\nKenya, Nigeria, South Africa, and the United States.") +
   scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
   theme_minimal() +
   coord_flip() +
   theme(legend.position = "none")
@@ -4451,6 +4049,563 @@ globalData2019clean %&gt;%
   font-size: 80%
 }
 .panel3-groupboxplot-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+count: false
+ 
+## Grouped rain cloud plot
+.panel1-grouprain-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-grouprain-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot
+.panel1-grouprain-auto[
+
+```r
+globalData2019clean %&gt;%
+* ggplot(aes(y = LADDER_NOW, x = country, fill = SEX, color = SEX))
+```
+]
+ 
+.panel2-grouprain-auto[
+![](viz_files/figure-html/grouprain_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot
+.panel1-grouprain-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, x = country, fill = SEX, color = SEX)) +
+* geom_half_violin(side = "r")
+```
+]
+ 
+.panel2-grouprain-auto[
+![](viz_files/figure-html/grouprain_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot
+.panel1-grouprain-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, x = country, fill = SEX, color = SEX)) +
+  geom_half_violin(side = "r") +
+* geom_half_point(alpha = .3, side = "l")
+```
+]
+ 
+.panel2-grouprain-auto[
+![](viz_files/figure-html/grouprain_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot
+.panel1-grouprain-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, x = country, fill = SEX, color = SEX)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
+* labs(x = "Country",
+*      y = "Life ladder (0 = worst, 10 = best)",
+*      title = "Life ladder by sex and country for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.",
+*      color = "Sex",
+*      fill = "Sex")
+```
+]
+ 
+.panel2-grouprain-auto[
+![](viz_files/figure-html/grouprain_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot
+.panel1-grouprain-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, x = country, fill = SEX, color = SEX)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
+  labs(x = "Country",
+       y = "Life ladder (0 = worst, 10 = best)",
+       title = "Life ladder by sex and country for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.",
+       color = "Sex",
+       fill = "Sex") +
+* theme_minimal()
+```
+]
+ 
+.panel2-grouprain-auto[
+![](viz_files/figure-html/grouprain_auto_06_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot
+.panel1-grouprain-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, x = country, fill = SEX, color = SEX)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
+  labs(x = "Country",
+       y = "Life ladder (0 = worst, 10 = best)",
+       title = "Life ladder by sex and country for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.",
+       color = "Sex",
+       fill = "Sex") +
+  theme_minimal() +
+* coord_flip()
+```
+]
+ 
+.panel2-grouprain-auto[
+![](viz_files/figure-html/grouprain_auto_07_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot
+.panel1-grouprain-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, x = country, fill = SEX, color = SEX)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
+  labs(x = "Country",
+       y = "Life ladder (0 = worst, 10 = best)",
+       title = "Life ladder by sex and country for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.",
+       color = "Sex",
+       fill = "Sex") +
+  theme_minimal() +
+  coord_flip() +
+* scale_color_brewer(palette = "Paired")
+```
+]
+ 
+.panel2-grouprain-auto[
+![](viz_files/figure-html/grouprain_auto_08_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot
+.panel1-grouprain-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, x = country, fill = SEX, color = SEX)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
+  labs(x = "Country",
+       y = "Life ladder (0 = worst, 10 = best)",
+       title = "Life ladder by sex and country for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.",
+       color = "Sex",
+       fill = "Sex") +
+  theme_minimal() +
+  coord_flip() +
+  scale_color_brewer(palette = "Paired") +
+* scale_fill_brewer(palette = "Paired")
+```
+]
+ 
+.panel2-grouprain-auto[
+![](viz_files/figure-html/grouprain_auto_09_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot
+.panel1-grouprain-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, x = country, fill = SEX, color = SEX)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
+  labs(x = "Country",
+       y = "Life ladder (0 = worst, 10 = best)",
+       title = "Life ladder by sex and country for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.",
+       color = "Sex",
+       fill = "Sex") +
+  theme_minimal() +
+  coord_flip() +
+  scale_color_brewer(palette = "Paired") +
+  scale_fill_brewer(palette = "Paired")
+```
+]
+ 
+.panel2-grouprain-auto[
+![](viz_files/figure-html/grouprain_auto_10_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-grouprain-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-grouprain-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-grouprain-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+
+---
+
+count: false
+ 
+## Grouped rain cloud plot with facets
+.panel1-grouprainfacet-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-grouprainfacet-auto[
+
+```
+# A tibble: 5,001 x 7
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT      LADDER_NOW
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;              &lt;dbl&gt;
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad              10
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad               5
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewhat bad          10
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad               5
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad              10
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad              10
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad              10
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewhat bad          10
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad               0
+10 Kenya   Male      23 Men           Satisfied     Somewhat good          5
+# … with 4,991 more rows
+```
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot with facets
+.panel1-grouprainfacet-auto[
+
+```r
+globalData2019clean %&gt;%
+* ggplot(aes(y = LADDER_NOW, fill = SEX, color = SEX))
+```
+]
+ 
+.panel2-grouprainfacet-auto[
+![](viz_files/figure-html/grouprainfacet_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot with facets
+.panel1-grouprainfacet-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, fill = SEX, color = SEX)) +
+* facet_wrap(facets = vars(country))
+```
+]
+ 
+.panel2-grouprainfacet-auto[
+![](viz_files/figure-html/grouprainfacet_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot with facets
+.panel1-grouprainfacet-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, fill = SEX, color = SEX)) +
+  facet_wrap(facets = vars(country)) +
+* geom_half_violin(side = "r")
+```
+]
+ 
+.panel2-grouprainfacet-auto[
+![](viz_files/figure-html/grouprainfacet_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot with facets
+.panel1-grouprainfacet-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, fill = SEX, color = SEX)) +
+  facet_wrap(facets = vars(country)) +
+  geom_half_violin(side = "r") +
+* geom_half_point(alpha = .3, side = "l")
+```
+]
+ 
+.panel2-grouprainfacet-auto[
+![](viz_files/figure-html/grouprainfacet_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot with facets
+.panel1-grouprainfacet-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, fill = SEX, color = SEX)) +
+  facet_wrap(facets = vars(country)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
+* labs(x = "Country",
+*      y = "Life ladder (0 = worst, 10 = best)",
+*      title = "Life ladder by sex and country for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.",
+*      color = "Sex",
+*      fill = "Sex")
+```
+]
+ 
+.panel2-grouprainfacet-auto[
+![](viz_files/figure-html/grouprainfacet_auto_06_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot with facets
+.panel1-grouprainfacet-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, fill = SEX, color = SEX)) +
+  facet_wrap(facets = vars(country)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
+  labs(x = "Country",
+       y = "Life ladder (0 = worst, 10 = best)",
+       title = "Life ladder by sex and country for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.",
+       color = "Sex",
+       fill = "Sex") +
+* theme_minimal()
+```
+]
+ 
+.panel2-grouprainfacet-auto[
+![](viz_files/figure-html/grouprainfacet_auto_07_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot with facets
+.panel1-grouprainfacet-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, fill = SEX, color = SEX)) +
+  facet_wrap(facets = vars(country)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
+  labs(x = "Country",
+       y = "Life ladder (0 = worst, 10 = best)",
+       title = "Life ladder by sex and country for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.",
+       color = "Sex",
+       fill = "Sex") +
+  theme_minimal() +
+* coord_flip()
+```
+]
+ 
+.panel2-grouprainfacet-auto[
+![](viz_files/figure-html/grouprainfacet_auto_08_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot with facets
+.panel1-grouprainfacet-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, fill = SEX, color = SEX)) +
+  facet_wrap(facets = vars(country)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
+  labs(x = "Country",
+       y = "Life ladder (0 = worst, 10 = best)",
+       title = "Life ladder by sex and country for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.",
+       color = "Sex",
+       fill = "Sex") +
+  theme_minimal() +
+  coord_flip() +
+* scale_color_brewer(palette = "Paired")
+```
+]
+ 
+.panel2-grouprainfacet-auto[
+![](viz_files/figure-html/grouprainfacet_auto_09_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot with facets
+.panel1-grouprainfacet-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, fill = SEX, color = SEX)) +
+  facet_wrap(facets = vars(country)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
+  labs(x = "Country",
+       y = "Life ladder (0 = worst, 10 = best)",
+       title = "Life ladder by sex and country for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.",
+       color = "Sex",
+       fill = "Sex") +
+  theme_minimal() +
+  coord_flip() +
+  scale_color_brewer(palette = "Paired") +
+* scale_fill_brewer(palette = "Paired")
+```
+]
+ 
+.panel2-grouprainfacet-auto[
+![](viz_files/figure-html/grouprainfacet_auto_10_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Grouped rain cloud plot with facets
+.panel1-grouprainfacet-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(y = LADDER_NOW, fill = SEX, color = SEX)) +
+  facet_wrap(facets = vars(country)) +
+  geom_half_violin(side = "r") +
+  geom_half_point(alpha = .3, side = "l") +
+  labs(x = "Country",
+       y = "Life ladder (0 = worst, 10 = best)",
+       title = "Life ladder by sex and country for 5001 participants in a 2019 survey\nof people from Kenya, Nigeria, South Africa, and the United States.",
+       color = "Sex",
+       fill = "Sex") +
+  theme_minimal() +
+  coord_flip() +
+  scale_color_brewer(palette = "Paired") +
+  scale_fill_brewer(palette = "Paired")
+```
+]
+ 
+.panel2-grouprainfacet-auto[
+![](viz_files/figure-html/grouprainfacet_auto_11_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-grouprainfacet-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-grouprainfacet-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-grouprainfacet-auto {
   color: black;
   width: NA%;
   hight: 33%;
