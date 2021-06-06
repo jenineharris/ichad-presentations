@@ -258,9 +258,15 @@ summary(object = globalData2019clean)
 
 ---
 
+## And now some data cleaning 
+
+&lt;img src="graphics/data-tutorials-wild.jpg" width="600" style="display: block; margin: auto;" /&gt;
+
+---
+
 ## Planning data cleaning 
 
-* All of these variables except `AGE` should be categorical, which is a **factor** data type in R 
+* All of these variables except `AGE` should be categorical; categorical variables are **factor** data type in R 
 
 * The way the variables are shown in the `summary()` indicates R thinks they are **numeric** data type 
 
@@ -273,6 +279,8 @@ summary(object = globalData2019clean)
     + Recoding the responses like **Don't know** or **Refused** to be `NA` in R
     
         + `NA` stands for **Not Available** in R and is how a missing value is recorded 
+        
+
         
 ---
 
@@ -424,433 +432,11 @@ summary(object = globalData2019clean)
  Max.   :9.000   Max.   :9.00   Max.   :9.000   Max.   :9.000   
 ```
 
-
----
-
-## Detour
-
-&lt;img src="graphics/exit-to-graphics.jpg" width="600" style="display: block; margin: auto;" /&gt;
-
 ---
 
 count: false
  
-## Make a graph
-.panel1-graph_country-auto[
-
-```r
-*globalData2019clean
-```
-]
- 
-.panel2-graph_country-auto[
-
-```
-# A tibble: 5,001 x 8
-   country   SEX   AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT BELIEVE_GOD
-   &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;
- 1 Kenya       2    21             1             2        4           2
- 2 Kenya       1    27             2             2        4           2
- 3 Kenya       2    23             1             2        3           2
- 4 Kenya       1    50             1             2        4           2
- 5 Kenya       1    24             2             2        4           2
- 6 Kenya       2    18             2             2        4           2
- 7 Kenya       1    33             2             2        4           2
- 8 Kenya       2    28             1             2        3           2
- 9 Kenya       2    50             1             2        4           2
-10 Kenya       1    23             1             1        2           1
-# … with 4,991 more rows, and 1 more variable: GLOBAL_COMMUNITY &lt;dbl&gt;
-```
-]
-
----
-count: false
- 
-## Make a graph
-.panel1-graph_country-auto[
-
-```r
-globalData2019clean %&gt;%
-* ggplot(aes(x = country))
-```
-]
- 
-.panel2-graph_country-auto[
-![](index_files/figure-html/graph_country_auto_02_output-1.png)&lt;!-- --&gt;
-]
-
----
-count: false
- 
-## Make a graph
-.panel1-graph_country-auto[
-
-```r
-globalData2019clean %&gt;%
-  ggplot(aes(x = country)) +
-* geom_bar()
-```
-]
- 
-.panel2-graph_country-auto[
-![](index_files/figure-html/graph_country_auto_03_output-1.png)&lt;!-- --&gt;
-]
-
-&lt;style&gt;
-.panel1-graph_country-auto {
-  color: black;
-  width: 49%;
-  hight: 32%;
-  float: left;
-  padding-left: 1%;
-  font-size: 80%
-}
-.panel2-graph_country-auto {
-  color: black;
-  width: 49%;
-  hight: 32%;
-  float: left;
-  padding-left: 1%;
-  font-size: 80%
-}
-.panel3-graph_country-auto {
-  color: black;
-  width: NA%;
-  hight: 33%;
-  float: left;
-  padding-left: 1%;
-  font-size: 80%
-}
-&lt;/style&gt;
-
-
-
-
-```r
-globalData2019clean %&gt;% 
-  ggplot(aes(x = country)) +
-  geom_bar()
-```
-
-![](index_files/figure-html/graph_country-1.png)&lt;!-- --&gt;
-
----
-
-count: false
- 
-## Make a fancier graph
-.panel1-graph_country_fancy-auto[
-
-```r
-*globalData2019clean
-```
-]
- 
-.panel2-graph_country_fancy-auto[
-
-```
-# A tibble: 5,001 x 8
-   country   SEX   AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT BELIEVE_GOD
-   &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;
- 1 Kenya       2    21             1             2        4           2
- 2 Kenya       1    27             2             2        4           2
- 3 Kenya       2    23             1             2        3           2
- 4 Kenya       1    50             1             2        4           2
- 5 Kenya       1    24             2             2        4           2
- 6 Kenya       2    18             2             2        4           2
- 7 Kenya       1    33             2             2        4           2
- 8 Kenya       2    28             1             2        3           2
- 9 Kenya       2    50             1             2        4           2
-10 Kenya       1    23             1             1        2           1
-# … with 4,991 more rows, and 1 more variable: GLOBAL_COMMUNITY &lt;dbl&gt;
-```
-]
-
----
-count: false
- 
-## Make a fancier graph
-.panel1-graph_country_fancy-auto[
-
-```r
-globalData2019clean %&gt;%
-* ggplot(aes(x = country))
-```
-]
- 
-.panel2-graph_country_fancy-auto[
-![](index_files/figure-html/graph_country_fancy_auto_02_output-1.png)&lt;!-- --&gt;
-]
-
----
-count: false
- 
-## Make a fancier graph
-.panel1-graph_country_fancy-auto[
-
-```r
-globalData2019clean %&gt;%
-  ggplot(aes(x = country)) +
-* geom_bar(fill = '#3264ce')
-```
-]
- 
-.panel2-graph_country_fancy-auto[
-![](index_files/figure-html/graph_country_fancy_auto_03_output-1.png)&lt;!-- --&gt;
-]
-
----
-count: false
- 
-## Make a fancier graph
-.panel1-graph_country_fancy-auto[
-
-```r
-globalData2019clean %&gt;%
-  ggplot(aes(x = country)) +
-  geom_bar(fill = '#3264ce') +
-* theme_minimal()
-```
-]
- 
-.panel2-graph_country_fancy-auto[
-![](index_files/figure-html/graph_country_fancy_auto_04_output-1.png)&lt;!-- --&gt;
-]
-
----
-count: false
- 
-## Make a fancier graph
-.panel1-graph_country_fancy-auto[
-
-```r
-globalData2019clean %&gt;%
-  ggplot(aes(x = country)) +
-  geom_bar(fill = '#3264ce') +
-  theme_minimal() +
-* labs(y = "Number of participants",
-*      x = "Country of residence",
-*      title = "Survey participation by country of residence")
-```
-]
- 
-.panel2-graph_country_fancy-auto[
-![](index_files/figure-html/graph_country_fancy_auto_05_output-1.png)&lt;!-- --&gt;
-]
-
----
-count: false
- 
-## Make a fancier graph
-.panel1-graph_country_fancy-auto[
-
-```r
-globalData2019clean %&gt;%
-  ggplot(aes(x = country)) +
-  geom_bar(fill = '#3264ce') +
-  theme_minimal() +
-  labs(y = "Number of participants",
-       x = "Country of residence",
-       title = "Survey participation by country of residence")
-```
-]
- 
-.panel2-graph_country_fancy-auto[
-![](index_files/figure-html/graph_country_fancy_auto_06_output-1.png)&lt;!-- --&gt;
-]
-
-&lt;style&gt;
-.panel1-graph_country_fancy-auto {
-  color: black;
-  width: 49%;
-  hight: 32%;
-  float: left;
-  padding-left: 1%;
-  font-size: 80%
-}
-.panel2-graph_country_fancy-auto {
-  color: black;
-  width: 49%;
-  hight: 32%;
-  float: left;
-  padding-left: 1%;
-  font-size: 80%
-}
-.panel3-graph_country_fancy-auto {
-  color: black;
-  width: NA%;
-  hight: 33%;
-  float: left;
-  padding-left: 1%;
-  font-size: 80%
-}
-&lt;/style&gt;
-
-
-
-
-```r
-globalData2019clean %&gt;% 
-  ggplot(aes(x = country)) +
-  geom_bar(fill = '#3264ce') +
-  theme_minimal() +
-  labs(y = "Number of participants",
-       x = "Country of residence",
-       title = "Survey participation by country of residence")
-```
-
-![](index_files/figure-html/graph_country_fancy-1.png)&lt;!-- --&gt;
-
----
-
-## Break 
-
-* Some fun things to try on your break:
-
-    + Choose a new color from colorbrewer2.org and use it to change your bar colors 
-    
-    + Add the text `base_size = 16` inside the parentheses in the `theme_minimal()` layer and see what happens when you run the code 
-    
-    + Add the text `base_family = 'serif'` inside the parentheses in the `theme_minimal()` layer and see what happens when you run the code 
-        
-        + You can keep the `base_size` argument and add `base_family` like `base_size = 16, base_family = 'serif'` or replace `base_size` with `base_family`
-
----
-
-## And now back to data cleaning 
-
-&lt;img src="graphics/data-tutorials-wild.jpg" width="600" style="display: block; margin: auto;" /&gt;
-
----
-
-count: false
- 
-## Reminder: Changing data types 1
-.panel1-data_types_remind-auto[
-
-```r
-*globalData2019clean &lt;- globalData2019
-```
-]
- 
-.panel2-data_types_remind-auto[
-
-]
-
----
-count: false
- 
-## Reminder: Changing data types 1
-.panel1-data_types_remind-auto[
-
-```r
-globalData2019clean &lt;- globalData2019 %&gt;%
-* filter(country %in% c(16, 21, 26, 34))
-```
-]
- 
-.panel2-data_types_remind-auto[
-
-]
-
----
-count: false
- 
-## Reminder: Changing data types 1
-.panel1-data_types_remind-auto[
-
-```r
-globalData2019clean &lt;- globalData2019 %&gt;%
-  filter(country %in% c(16, 21, 26, 34)) %&gt;%
-* select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
-*        ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY)
-```
-]
- 
-.panel2-data_types_remind-auto[
-
-]
-
----
-count: false
- 
-## Reminder: Changing data types 1
-.panel1-data_types_remind-auto[
-
-```r
-globalData2019clean &lt;- globalData2019 %&gt;%
-  filter(country %in% c(16, 21, 26, 34)) %&gt;%
-  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
-         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
-* zap_labels()
-```
-]
- 
-.panel2-data_types_remind-auto[
-
-]
-
----
-count: false
- 
-## Reminder: Changing data types 1
-.panel1-data_types_remind-auto[
-
-```r
-globalData2019clean &lt;- globalData2019 %&gt;%
-  filter(country %in% c(16, 21, 26, 34)) %&gt;%
-  select(country, SEX, AGE, BETTER_GENDER, COUNTRY_SATIS,
-         ECON_SIT, BELIEVE_GOD, GLOBAL_COMMUNITY) %&gt;%
-  zap_labels() %&gt;%
-* mutate(country = recode_factor(country,
-*                            '16' = 'Kenya',
-*                            '21' = 'Nigeria',
-*                            '26' = 'South Africa',
-*                            '34' = 'United States'))
-```
-]
- 
-.panel2-data_types_remind-auto[
-
-]
-
-&lt;style&gt;
-.panel1-data_types_remind-auto {
-  color: black;
-  width: 98%;
-  hight: 32%;
-  float: left;
-  padding-left: 1%;
-  font-size: 80%
-}
-.panel2-data_types_remind-auto {
-  color: black;
-  width: 0%;
-  hight: 32%;
-  float: left;
-  padding-left: 1%;
-  font-size: 80%
-}
-.panel3-data_types_remind-auto {
-  color: black;
-  width: NA%;
-  hight: 33%;
-  float: left;
-  padding-left: 1%;
-  font-size: 80%
-}
-&lt;/style&gt;
-
-
-
-
-
-
----
-
-count: false
- 
-## Changing data types 2
+## Changing data types 2: Sex variable
 .panel1-data_types2-auto[
 
 ```r
@@ -865,7 +451,7 @@ count: false
 ---
 count: false
  
-## Changing data types 2
+## Changing data types 2: Sex variable
 .panel1-data_types2-auto[
 
 ```r
@@ -881,7 +467,7 @@ globalData2019clean &lt;- globalData2019 %&gt;%
 ---
 count: false
  
-## Changing data types 2
+## Changing data types 2: Sex variable
 .panel1-data_types2-auto[
 
 ```r
@@ -899,7 +485,7 @@ globalData2019clean &lt;- globalData2019 %&gt;%
 ---
 count: false
  
-## Changing data types 2
+## Changing data types 2: Sex variable
 .panel1-data_types2-auto[
 
 ```r
@@ -918,7 +504,7 @@ globalData2019clean &lt;- globalData2019 %&gt;%
 ---
 count: false
  
-## Changing data types 2
+## Changing data types 2: Sex variable
 .panel1-data_types2-auto[
 
 ```r
@@ -942,7 +528,7 @@ globalData2019clean &lt;- globalData2019 %&gt;%
 ---
 count: false
  
-## Changing data types 2
+## Changing data types 2: Sex variable
 .panel1-data_types2-auto[
 
 ```r
@@ -1027,7 +613,7 @@ summary(object = globalData2019clean)
 
 count: false
  
-## Changing data types 3
+## Changing data types 3: Better_gender &amp; Country_satis
 .panel1-data_types3-auto[
 
 ```r
@@ -1042,7 +628,7 @@ count: false
 ---
 count: false
  
-## Changing data types 3
+## Changing data types 3: Better_gender &amp; Country_satis
 .panel1-data_types3-auto[
 
 ```r
@@ -1058,7 +644,7 @@ globalData2019clean &lt;- globalData2019 %&gt;%
 ---
 count: false
  
-## Changing data types 3
+## Changing data types 3: Better_gender &amp; Country_satis
 .panel1-data_types3-auto[
 
 ```r
@@ -1076,7 +662,7 @@ globalData2019clean &lt;- globalData2019 %&gt;%
 ---
 count: false
  
-## Changing data types 3
+## Changing data types 3: Better_gender &amp; Country_satis
 .panel1-data_types3-auto[
 
 ```r
@@ -1095,7 +681,7 @@ globalData2019clean &lt;- globalData2019 %&gt;%
 ---
 count: false
  
-## Changing data types 3
+## Changing data types 3: Better_gender &amp; Country_satis
 .panel1-data_types3-auto[
 
 ```r
@@ -1119,7 +705,7 @@ globalData2019clean &lt;- globalData2019 %&gt;%
 ---
 count: false
  
-## Changing data types 3
+## Changing data types 3: Better_gender &amp; Country_satis
 .panel1-data_types3-auto[
 
 ```r
@@ -1146,7 +732,7 @@ globalData2019clean &lt;- globalData2019 %&gt;%
 ---
 count: false
  
-## Changing data types 3
+## Changing data types 3: Better_gender &amp; Country_satis
 .panel1-data_types3-auto[
 
 ```r
@@ -1179,7 +765,7 @@ globalData2019clean &lt;- globalData2019 %&gt;%
 ---
 count: false
  
-## Changing data types 3
+## Changing data types 3: Better_gender &amp; Country_satis
 .panel1-data_types3-auto[
 
 ```r
@@ -1273,13 +859,15 @@ summary(object = globalData2019clean)
 
 ---
 
-## Recoding data: You Try It!
+## Recoding data: You Try It! (BREAK)
 
 * Look in the codebook to find the variable for **ECON_SIT** (note: it will be lower case in the codebook)
 
-* Add recoding of **ECON_SIT** to the code below and run the code 
+* Add recoding of **ECON_SIT** to the data management code 
 
-* Run the `summary()` code in the next code chunk to check your work
+* Run the `summary()` code in the next code chunk to check your work 
+
+* Take a break! :-)
 
 
 
@@ -1591,7 +1179,7 @@ summary(object = globalData2019clean)
 
 * Use the codebook to find the labels you need 
 
-* Add to the existing code: 
+* Add to the existing code 
 
 
 
@@ -2149,14 +1737,14 @@ table1(~ SEX + AGE + BETTER_GENDER,
 ## Oh no bad labels
 
 
-&lt;img src="graphics/making-labels.png" width="600" style="display: block; margin: auto;" /&gt;
+&lt;img src="graphics/things-that-make-you-go.jpg" width="600" style="display: block; margin: auto;" /&gt;
 
 
 ---
 
 ## Basic table with labels
 
-* Add labels for the variables and add the `BELIEVE_GOD` variable
+* Add labels for the variables in the table so far and for the `BELIEVE_GOD` variable
 
 
 ```r
@@ -2643,6 +2231,469 @@ table1(~ AGE + BETTER_GENDER + BELIEVE_GOD + COUNTRY_SATIS + ECON_SIT | SEX,
 </tbody>
 </table>
 </div>
+
+---
+
+## Preview of next week!
+
+&lt;img src="graphics/exit-to-graphics.jpg" width="600" style="display: block; margin: auto;" /&gt;
+
+---
+
+count: false
+ 
+## Make a graph
+.panel1-graph_country-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-graph_country-auto[
+
+```
+# A tibble: 5,001 x 8
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT BELIEVE_GOD        
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;    &lt;fct&gt;              
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad It is necessary to…
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad It is necessary to…
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewha… It is necessary to…
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad It is necessary to…
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad It is necessary to…
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad It is necessary to…
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad It is necessary to…
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewha… It is necessary to…
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad It is necessary to…
+10 Kenya   Male      23 Men           Satisfied     Somewha… It is not necessar…
+# … with 4,991 more rows, and 1 more variable: GLOBAL_COMMUNITY &lt;fct&gt;
+```
+]
+
+---
+count: false
+ 
+## Make a graph
+.panel1-graph_country-auto[
+
+```r
+globalData2019clean %&gt;%
+* ggplot(aes(x = country))
+```
+]
+ 
+.panel2-graph_country-auto[
+![](index_files/figure-html/graph_country_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Make a graph
+.panel1-graph_country-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = country)) +
+* geom_bar()
+```
+]
+ 
+.panel2-graph_country-auto[
+![](index_files/figure-html/graph_country_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-graph_country-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-graph_country-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-graph_country-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+```r
+globalData2019clean %&gt;% 
+  ggplot(aes(x = country)) +
+  geom_bar()
+```
+
+![](index_files/figure-html/graph_country-1.png)&lt;!-- --&gt;
+
+---
+
+count: false
+ 
+## Make a fancier graph
+.panel1-graph_country_fancy-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-graph_country_fancy-auto[
+
+```
+# A tibble: 5,001 x 8
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT BELIEVE_GOD        
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;    &lt;fct&gt;              
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad It is necessary to…
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad It is necessary to…
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewha… It is necessary to…
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad It is necessary to…
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad It is necessary to…
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad It is necessary to…
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad It is necessary to…
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewha… It is necessary to…
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad It is necessary to…
+10 Kenya   Male      23 Men           Satisfied     Somewha… It is not necessar…
+# … with 4,991 more rows, and 1 more variable: GLOBAL_COMMUNITY &lt;fct&gt;
+```
+]
+
+---
+count: false
+ 
+## Make a fancier graph
+.panel1-graph_country_fancy-auto[
+
+```r
+globalData2019clean %&gt;%
+* ggplot(aes(x = country))
+```
+]
+ 
+.panel2-graph_country_fancy-auto[
+![](index_files/figure-html/graph_country_fancy_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Make a fancier graph
+.panel1-graph_country_fancy-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = country)) +
+* geom_bar(fill = '#3264ce')
+```
+]
+ 
+.panel2-graph_country_fancy-auto[
+![](index_files/figure-html/graph_country_fancy_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Make a fancier graph
+.panel1-graph_country_fancy-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = country)) +
+  geom_bar(fill = '#3264ce') +
+* theme_minimal()
+```
+]
+ 
+.panel2-graph_country_fancy-auto[
+![](index_files/figure-html/graph_country_fancy_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Make a fancier graph
+.panel1-graph_country_fancy-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = country)) +
+  geom_bar(fill = '#3264ce') +
+  theme_minimal() +
+* labs(y = "Number of participants",
+*      x = "Country of residence",
+*      title = "Survey participation by country of residence")
+```
+]
+ 
+.panel2-graph_country_fancy-auto[
+![](index_files/figure-html/graph_country_fancy_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## Make a fancier graph
+.panel1-graph_country_fancy-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = country)) +
+  geom_bar(fill = '#3264ce') +
+  theme_minimal() +
+  labs(y = "Number of participants",
+       x = "Country of residence",
+       title = "Survey participation by country of residence")
+```
+]
+ 
+.panel2-graph_country_fancy-auto[
+![](index_files/figure-html/graph_country_fancy_auto_06_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-graph_country_fancy-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-graph_country_fancy-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-graph_country_fancy-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+```r
+globalData2019clean %&gt;% 
+  ggplot(aes(x = country)) +
+  geom_bar(fill = '#3264ce') +
+  theme_minimal() +
+  labs(y = "Number of participants",
+       x = "Country of residence",
+       title = "Survey participation by country of residence")
+```
+
+![](index_files/figure-html/graph_country_fancy-1.png)&lt;!-- --&gt;
+
+---
+
+## You Try It!  
+
+* Some fun things to try:
+
+    + Choose a new color from colorbrewer2.org and use it to change your bar colors 
+    
+    + Add the text `base_size = 16` inside the parentheses in the `theme_minimal()` layer and see what happens when you run the code 
+    
+    + Add the text `base_family = 'serif'` inside the parentheses in the `theme_minimal()` layer and see what happens when you run the code 
+        
+        + You can keep the `base_size` argument and add `base_family` like `base_size = 16, base_family = 'serif'` or replace `base_size` with `base_family`
+        
+    + Try changing the country variable to one of the other categorical variables in the data set (be sure to change the labels to match the variable you choose)
+        
+        
+---
+
+count: false
+ 
+## One option for You Try It
+.panel1-graph_country_fancy_answer-auto[
+
+```r
+*globalData2019clean
+```
+]
+ 
+.panel2-graph_country_fancy_answer-auto[
+
+```
+# A tibble: 5,001 x 8
+   country SEX      AGE BETTER_GENDER COUNTRY_SATIS ECON_SIT BELIEVE_GOD        
+   &lt;fct&gt;   &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt;         &lt;fct&gt;         &lt;fct&gt;    &lt;fct&gt;              
+ 1 Kenya   Female    21 Men           Dissatisfied  Very bad It is necessary to…
+ 2 Kenya   Male      27 Women         Dissatisfied  Very bad It is necessary to…
+ 3 Kenya   Female    23 Men           Dissatisfied  Somewha… It is necessary to…
+ 4 Kenya   Male      50 Men           Dissatisfied  Very bad It is necessary to…
+ 5 Kenya   Male      24 Women         Dissatisfied  Very bad It is necessary to…
+ 6 Kenya   Female    18 Women         Dissatisfied  Very bad It is necessary to…
+ 7 Kenya   Male      33 Women         Dissatisfied  Very bad It is necessary to…
+ 8 Kenya   Female    28 Men           Dissatisfied  Somewha… It is necessary to…
+ 9 Kenya   Female    50 Men           Dissatisfied  Very bad It is necessary to…
+10 Kenya   Male      23 Men           Satisfied     Somewha… It is not necessar…
+# … with 4,991 more rows, and 1 more variable: GLOBAL_COMMUNITY &lt;fct&gt;
+```
+]
+
+---
+count: false
+ 
+## One option for You Try It
+.panel1-graph_country_fancy_answer-auto[
+
+```r
+globalData2019clean %&gt;%
+* ggplot(aes(x = BETTER_GENDER))
+```
+]
+ 
+.panel2-graph_country_fancy_answer-auto[
+![](index_files/figure-html/graph_country_fancy_answer_auto_02_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## One option for You Try It
+.panel1-graph_country_fancy_answer-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = BETTER_GENDER)) +
+* geom_bar(fill = '#bcbddc')
+```
+]
+ 
+.panel2-graph_country_fancy_answer-auto[
+![](index_files/figure-html/graph_country_fancy_answer_auto_03_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## One option for You Try It
+.panel1-graph_country_fancy_answer-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = BETTER_GENDER)) +
+  geom_bar(fill = '#bcbddc') +
+* theme_minimal(base_size = 16, base_family = 'serif')
+```
+]
+ 
+.panel2-graph_country_fancy_answer-auto[
+![](index_files/figure-html/graph_country_fancy_answer_auto_04_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## One option for You Try It
+.panel1-graph_country_fancy_answer-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = BETTER_GENDER)) +
+  geom_bar(fill = '#bcbddc') +
+  theme_minimal(base_size = 16, base_family = 'serif') +
+* labs(y = "Number of participants",
+*      x = "Who has a better life in this country",
+*      title = "Participant opinions on who has a better life\nin their country.")
+```
+]
+ 
+.panel2-graph_country_fancy_answer-auto[
+![](index_files/figure-html/graph_country_fancy_answer_auto_05_output-1.png)&lt;!-- --&gt;
+]
+
+---
+count: false
+ 
+## One option for You Try It
+.panel1-graph_country_fancy_answer-auto[
+
+```r
+globalData2019clean %&gt;%
+  ggplot(aes(x = BETTER_GENDER)) +
+  geom_bar(fill = '#bcbddc') +
+  theme_minimal(base_size = 16, base_family = 'serif') +
+  labs(y = "Number of participants",
+       x = "Who has a better life in this country",
+       title = "Participant opinions on who has a better life\nin their country.")
+```
+]
+ 
+.panel2-graph_country_fancy_answer-auto[
+![](index_files/figure-html/graph_country_fancy_answer_auto_06_output-1.png)&lt;!-- --&gt;
+]
+
+&lt;style&gt;
+.panel1-graph_country_fancy_answer-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel2-graph_country_fancy_answer-auto {
+  color: black;
+  width: 49%;
+  hight: 32%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+.panel3-graph_country_fancy_answer-auto {
+  color: black;
+  width: NA%;
+  hight: 33%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+```r
+globalData2019clean %&gt;% 
+  ggplot(aes(x = BETTER_GENDER)) +
+  geom_bar(fill = '#bcbddc') +
+  theme_minimal(base_size = 16, base_family = 'serif') +
+  labs(y = "Number of participants",
+       x = "Who has a better life in this country",
+       title = "Participant opinions on who has a better life\nin their country.") 
+```
+
+![](index_files/figure-html/graph_country_fancy_answer-1.png)&lt;!-- --&gt;
+
+
+
 
 ---
 
